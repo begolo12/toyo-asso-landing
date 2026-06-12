@@ -577,6 +577,7 @@ if (adminPassword) {
         submitBtn.textContent = "Simpan Lowongan";
         document.getElementById("createJobModalTitle").textContent = "Tambah Lowongan Baru";
         document.getElementById("editId").value = "";
+        form.id.disabled = false;
         modal.classList.remove("hidden");
         modal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
@@ -694,6 +695,7 @@ function handleEdit(jobId) {
 
     // Populate fields
     form.id.value = jobId;
+    form.id.disabled = true; // ID tidak bisa diubah saat edit
     form.companyRomaji.value = job.company.romaji || "";
     form.companyJp.value = job.company.jp || "";
     form.industry.value = job.industry || "";

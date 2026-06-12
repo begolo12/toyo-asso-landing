@@ -154,8 +154,14 @@
                 <div class="form-grid">
                     <label class="form-field">
                         <span>ID Lowongan *</span>
-                        <input type="text" name="id" required pattern="[a-z0-9\-]+" placeholder="contoh: abc-construction">
-                        <small>Huruf kecil, angka, strip. Contoh: <code>torizen-shokuchoniku</code></small>
+                        <input type="text" name="id" id="id" required pattern="[a-z0-9\-]+" placeholder="contoh: abc-construction">
+                        <small>Huruf kecil, angka, strip. Tidak bisa diubah saat edit. Contoh: <code>torizen-shokuchoniku</code></small>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Jumlah Lowongan (slot) *</span>
+                        <input type="number" name="slots" required min="1" placeholder="Contoh: 5">
+                        <small>Slot total. Otomatis berkurang saat pendaftar di-aprove (lolos).</small>
                     </label>
 
                     <label class="form-field">
