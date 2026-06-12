@@ -38,7 +38,7 @@ const MIME = {
 };
 
 // ===== File-backed store =====
-let store = { jobsStatus: {}, registrations: {}, jobVisibility: {} };
+let store = { jobsStatus: {}, registrations: {}, jobVisibility: {}, visibilityLog: [] };
 
 function loadStoreSync() {
     try {
@@ -48,6 +48,7 @@ function loadStoreSync() {
             store.jobsStatus = parsed.jobsStatus || {};
             store.registrations = parsed.registrations || {};
             store.jobVisibility = parsed.jobVisibility || {};
+            store.visibilityLog = parsed.visibilityLog || [];
         } else {
             // Default: semua lowongan terbuka
             try {
@@ -59,7 +60,7 @@ function loadStoreSync() {
         }
     } catch (err) {
         console.warn("[WARN] Gagal baca store, mulai fresh:", err.message);
-        store = { jobsStatus: {}, registrations: {}, jobVisibility: {} };
+        store = { jobsStatus: {}, registrations: {}, jobVisibility: {}, visibilityLog: [] };
     }
 }
 
@@ -437,21 +438,95 @@ const server = http.createServer(async (req, res) => {
                 }
             }
 
+            // editJob: update lowongan yang sudah ada
+            if (action === "editJob") {
+                const job = data.job;
+                if (!job || typeof job !== "object") {
+                    return sendJson(res, 400, { error: "body.job wajib diisi" });
+                }
+                if (!job.id) return sendJson(res, 400, { error: "id lowongan wajib diisi" });
+                const errors = [];
+                if (!job.company?.jp) errors.push("company.jp");
+                if (!job.company?.romaji) errors.push("company.romaji");
+                if (!job.industry) errors.push("industry");
+                if (!job.location) errors.push("location");
+                if (!job.salary?.gross) errors.push("salary.gross");
+                if (!job.salary?.net) errors.push("salary.net");
+                if (!job.interview?.date) errors.push("interview.date");
+                if (!job.interview?.type) errors.push("interview.type");
+                if (errors.length > 0) {
+                    return sendJson(res, 400, { error: `Field wajib belum diisi: ${errors.join(", ")}` });
+                }
+                const newJob = {
+                    id: job.id,
+                    gender: ["male", "female", "all"].includes(job.gender) ? job.gender : "all",
+                    slots: Number(job.slots) || Number(job.vacancies) || 0,
+                    company: {
+                        jp: String(job.company.jp).trim(),
+                        romaji: String(job.company.romaji).trim(),
+                    },
+                    industry: String(job.industry).trim(),
+                    industryJp: job.industryJp ? String(job.industryJp).trim() : "",
+                    location: String(job.location).trim(),
+                    vacancies: job.vacancies != null ? job.vacancies : 0,
+                    candidates: job.candidates != null ? Number(job.candidates) : 0,
+                    salary: {
+                        gross: Number(job.salary.gross),
+                        grossHourly: job.salary.grossHourly ? Number(job.salary.grossHourly) : null,
+                        net: Number(job.salary.net),
+                    },
+                    interview: {
+                        date: job.interview.date,
+                        type: job.interview.type === "online" ? "online" : "offline",
+                    },
+                    description: job.description ? String(job.description).trim() : "",
+                    requirements: Array.isArray(job.requirements)
+                        ? job.requirements.map((r) => String(r).trim()).filter(Boolean)
+                        : [],
+                    mensetsuNotes: job.mensetsuNotes ? String(job.mensetsuNotes).trim() : "",
+                };
+                try {
+                    const raw = await fsp.readFile(JOBS_FILE, "utf-8");
+                    const jobsData = JSON.parse(raw);
+                    const idx = jobsData.jobs.findIndex((j) => j.id === job.id);
+                    if (idx >= 0) jobsData.jobs[idx] = newJob;
+                    else jobsData.jobs.push(newJob);
+                    await fsp.writeFile(JOBS_FILE, JSON.stringify(jobsData, null, 2));
+                    return sendJson(res, 200, { success: true, job: newJob });
+                } catch (e) {
+                    return sendJson(res, 500, { error: "Gagal simpan jobs.json: " + e.message });
+                }
+            }
+
             // toggleVisibility: hide/unhide job dari web (admin masih bisa lihat)
             if (action === "toggleVisibility") {
                 const { jobId, isHidden } = data;
                 if (!jobId) return sendJson(res, 400, { error: "jobId wajib diisi" });
                 store.jobVisibility[jobId] = !!isHidden;
+                // Log ke audit trail
+                if (!store.visibilityLog) store.visibilityLog = [];
+                store.visibilityLog.push({
+                    jobId,
+                    action: isHidden ? "hide" : "unhide",
+                    timestamp: new Date().toISOString(),
+                });
                 saveStore();
                 return sendJson(res, 200, { success: true, jobId, isHidden: !!isHidden });
             }
 
-            return sendJson(res, 400, { error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', atau 'toggleVisibility'." });
+            return sendJson(res, 400, { error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', 'editJob', atau 'toggleVisibility'." });
         }
 
         // GET: list
         if (req.method === "GET") {
             const u = new URL(req.url, "http://localhost");
+
+            // Visibility log endpoint (audit trail)
+            if (u.searchParams.get("log") === "visibility") {
+                const log = (store.visibilityLog || []).slice().reverse();
+                return sendJson(res, 200, { log });
+            }
+
             const jobId = u.searchParams.get("jobId");
             const all = u.searchParams.get("all");
 

@@ -31,11 +31,22 @@ export default async function handler(req, res) {
 
     // ===== GET: list registrations =====
     if (req.method === "GET") {
-        const { jobId, all } = req.query || {};
+        const { jobId, all, log } = req.query || {};
 
         try {
             await ensureSchema();
             const sql = getDB();
+
+            // Visibility log (audit trail hide/unhide)
+            if (log === "visibility") {
+                const logRows = await sql`
+                    SELECT id, job_id, action, timestamp
+                    FROM job_visibility_log
+                    ORDER BY timestamp DESC
+                    LIMIT 200
+                `;
+                return res.status(200).json({ log: logRows });
+            }
 
             if (all === "1" || all === "true") {
                 const rows = await sql`
@@ -226,11 +237,80 @@ export default async function handler(req, res) {
                     ON CONFLICT (job_id)
                     DO UPDATE SET is_hidden = ${!!isHidden}, updated_at = NOW()
                 `;
+                // Log ke audit trail
+                await sql`
+                    INSERT INTO job_visibility_log (job_id, action)
+                    VALUES (${jobId}, ${!!isHidden ? "hide" : "unhide"})
+                `;
                 return res.status(200).json({ success: true, jobId, isHidden: !!isHidden });
             }
 
+            // ---- editJob: update lowongan yang sudah ada ----
+            if (action === "editJob") {
+                const job = body.job;
+                if (!job || typeof job !== "object") {
+                    return res.status(400).json({ error: "body.job wajib diisi" });
+                }
+                // Validasi field wajib
+                const errors = [];
+                if (!job.id || typeof job.id !== "string") errors.push("id");
+                if (!job.company?.jp) errors.push("company.jp");
+                if (!job.company?.romaji) errors.push("company.romaji");
+                if (!job.industry) errors.push("industry");
+                if (!job.location) errors.push("location");
+                if (!job.salary?.gross) errors.push("salary.gross");
+                if (!job.salary?.net) errors.push("salary.net");
+                if (!job.interview?.date) errors.push("interview.date");
+                if (!job.interview?.type) errors.push("interview.type");
+                if (errors.length > 0) {
+                    return res.status(400).json({
+                        error: `Field wajib belum diisi: ${errors.join(", ")}`,
+                    });
+                }
+                const cleanId = String(job.id).trim().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+                if (!cleanId) {
+                    return res.status(400).json({ error: "id lowongan tidak valid" });
+                }
+                const newJob = {
+                    id: cleanId,
+                    gender: ["male", "female", "all"].includes(job.gender) ? job.gender : "all",
+                    slots: Number(job.slots) || Number(job.vacancies) || 0,
+                    company: {
+                        jp: String(job.company.jp).trim(),
+                        romaji: String(job.company.romaji).trim(),
+                    },
+                    industry: String(job.industry).trim(),
+                    industryJp: job.industryJp ? String(job.industryJp).trim() : "",
+                    location: String(job.location).trim(),
+                    vacancies: job.vacancies != null ? job.vacancies : 0,
+                    candidates: job.candidates != null ? Number(job.candidates) : 0,
+                    salary: {
+                        gross: Number(job.salary.gross),
+                        grossHourly: job.salary.grossHourly ? Number(job.salary.grossHourly) : null,
+                        net: Number(job.salary.net),
+                    },
+                    interview: {
+                        date: job.interview.date,
+                        type: job.interview.type === "online" ? "online" : "offline",
+                    },
+                    description: job.description ? String(job.description).trim() : "",
+                    requirements: Array.isArray(job.requirements)
+                        ? job.requirements.map((r) => String(r).trim()).filter(Boolean)
+                        : [],
+                    mensetsuNotes: job.mensetsuNotes ? String(job.mensetsuNotes).trim() : "",
+                };
+                const jobJson = JSON.stringify(newJob);
+                await sql`
+                    INSERT INTO jobs (id, data, created_at, updated_at)
+                    VALUES (${cleanId}, ${jobJson}::jsonb, NOW(), NOW())
+                    ON CONFLICT (id)
+                    DO UPDATE SET data = ${jobJson}::jsonb, updated_at = NOW()
+                `;
+                return res.status(200).json({ success: true, job: newJob });
+            }
+
             return res.status(400).json({
-                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', atau 'toggleVisibility'.",
+                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', 'editJob', atau 'toggleVisibility'.",
             });
         } catch (err) {
             console.error("Admin action error:", err);

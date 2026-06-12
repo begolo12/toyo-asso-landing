@@ -58,6 +58,7 @@
             <div class="tabs">
                 <button class="tab active" data-tab="jobs">Kelola Lowongan</button>
                 <button class="tab" data-tab="registrations">Data Pendaftar</button>
+                <button class="tab" data-tab="history">Riwayat Hide</button>
             </div>
 
             <!-- Tab: Jobs -->
@@ -123,6 +124,15 @@
                     <div class="loading"><div class="spinner"></div><p>Memuat...</p></div>
                 </div>
             </section>
+
+            <!-- Tab: History (Hide/Unhide audit trail) -->
+            <section id="tab-history" class="tab-content">
+                <h2>Riwayat Hide / Unhide</h2>
+                <p class="hint">Audit trail perubahan visibility lowongan. Lowongan yang di-hide tetap bisa di-restore lewat tab Kelola Lowongan (tombol Unhide).</p>
+                <div id="historyPanel" class="history-panel">
+                    <div class="loading"><div class="spinner"></div><p>Memuat...</p></div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -134,11 +144,12 @@
         <div class="modal-content modal-content-wide">
             <button class="modal-close" data-close-create-job aria-label="Tutup">&times;</button>
             <div class="modal-header">
-                <h2>Tambah Lowongan Baru</h2>
+                <h2 id="createJobModalTitle">Tambah Lowongan Baru</h2>
                 <p class="modal-subtitle">Lowongan akan langsung tersedia di landing page</p>
             </div>
 
             <form id="createJobForm" class="create-job-form" novalidate>
+                <input type="hidden" name="editId" id="editId" value="">
                 <div class="form-grid">
                     <label class="form-field">
                         <span>ID Lowongan *</span>

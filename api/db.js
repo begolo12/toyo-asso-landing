@@ -47,6 +47,13 @@ export async function ensureSchema() {
         is_hidden  BOOLEAN NOT NULL DEFAULT FALSE,
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
+    // History/audit log untuk hide/unhide (audit trail)
+    await sql`CREATE TABLE IF NOT EXISTS job_visibility_log (
+        id        SERIAL PRIMARY KEY,
+        job_id    TEXT NOT NULL,
+        action    TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
     // Pendaftar
     await sql`CREATE TABLE IF NOT EXISTS registrations (
         id                TEXT PRIMARY KEY,

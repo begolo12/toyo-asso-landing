@@ -1026,3 +1026,57 @@ body {
         max-height: 95vh;
     }
 }
+
+/* ===== Edit Job Button ===== */
+.btn-edit {
+    background: #1e3a5f;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-edit:hover {
+    background: #0f172a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(30, 58, 95, 0.25);
+}
+
+/* ===== History (audit trail) ===== */
+.history-panel {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.history-action {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.history-action.history-hide {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.history-action.history-unhide {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.history-note {
+    margin: 16px 4px 0;
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+#tab-history .hint {
+    margin-bottom: 20px;
+}

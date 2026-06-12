@@ -76,6 +76,8 @@ document.querySelectorAll(".tab").forEach((tab) => {
 
         if (tab.dataset.tab === "registrations") {
             loadRegistrations();
+        } else if (tab.dataset.tab === "history") {
+            loadHistory();
         }
     });
 });
@@ -129,6 +131,7 @@ function renderJobsList() {
                     <span class="status-pill ${isOpen ? "open" : "closed"}">${isOpen ? "DIBUKA" : "DITUTUP"}</span>
                 </div>
                 <div class="job-row-actions">
+                    <button class="btn btn-sm btn-edit" data-edit="${escapeHtml(job.id)}" title="Edit lowongan">✏ Edit</button>
                     <button class="btn btn-sm ${isOpen ? "btn-danger" : "btn-success"}" data-toggle="${escapeHtml(job.id)}" data-open="${isOpen ? "true" : "false"}">
                         ${isOpen ? "TUTUP" : "BUKA"}
                     </button>
@@ -145,6 +148,9 @@ function renderJobsList() {
     });
     list.querySelectorAll("[data-visibility]").forEach((btn) => {
         btn.addEventListener("click", () => toggleVisibility(btn.dataset.visibility, btn.dataset.hidden === "true"));
+    });
+    list.querySelectorAll("[data-edit]").forEach((btn) => {
+        btn.addEventListener("click", () => handleEdit(btn.dataset.edit));
     });
 }
 
@@ -539,6 +545,8 @@ if (adminPassword) {
         errorEl.textContent = "";
         submitBtn.disabled = false;
         submitBtn.textContent = "Simpan Lowongan";
+        document.getElementById("createJobModalTitle").textContent = "Tambah Lowongan Baru";
+        document.getElementById("editId").value = "";
         modal.classList.remove("hidden");
         modal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
@@ -596,31 +604,147 @@ if (adminPassword) {
             mensetsuNotes: (fd.get("mensetsuNotes") || "").toString().trim(),
         };
 
+        const editId = document.getElementById("editId").value;
+        if (editId) job.id = editId;
+        const action = editId ? "editJob" : "createJob";
+        const successMsg = editId ? "berhasil diperbarui" : "berhasil ditambahkan";
+        const btnText = editId ? "Simpan Perubahan" : "Simpan Lowongan";
+        const btnBusy = editId ? "MENYIMPAN PERUBAHAN..." : "MENYIMPAN...";
+
         submitBtn.disabled = true;
-        submitBtn.textContent = "MENYIMPAN...";
+        submitBtn.textContent = btnBusy;
 
         try {
             const res = await fetch(ADMIN_API, {
                 method: "POST",
                 headers: { ...authHeaders(), "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "createJob", job, password: adminPassword }),
+                body: JSON.stringify({ action, job, password: adminPassword }),
             });
             const result = await res.json();
             if (res.ok && result.success) {
                 closeModal();
                 await loadJobsManagement();
-                alert(`Lowongan "${result.job.company.romaji}" berhasil ditambahkan.`);
+                alert(`Lowongan "${result.job.company.romaji}" ${successMsg}.`);
             } else {
                 errorEl.textContent = result.error || "Gagal menyimpan lowongan";
                 errorEl.classList.remove("hidden");
                 submitBtn.disabled = false;
-                submitBtn.textContent = "Simpan Lowongan";
+                submitBtn.textContent = btnText;
             }
         } catch (err) {
             errorEl.textContent = "Gagal terhubung ke server";
             errorEl.classList.remove("hidden");
             submitBtn.disabled = false;
-            submitBtn.textContent = "Simpan Lowongan";
+            submitBtn.textContent = btnText;
         }
     });
 })();
+
+// ===== Handle Edit (dipanggil dari tombol Edit di job-row) =====
+function handleEdit(jobId) {
+    const job = jobMap[jobId];
+    if (!job) {
+        alert("Job tidak ditemukan");
+        return;
+    }
+
+    const form = document.getElementById("createJobForm");
+    const modal = document.getElementById("createJobModal");
+    const errorEl = document.getElementById("createJobError");
+    const submitBtn = document.getElementById("createJobSubmitBtn");
+
+    // Reset & switch ke mode edit
+    form.reset();
+    errorEl.classList.add("hidden");
+    errorEl.textContent = "";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Simpan Perubahan";
+    document.getElementById("createJobModalTitle").textContent = "Edit Lowongan";
+    document.getElementById("editId").value = jobId;
+
+    // Populate fields
+    form.id.value = jobId;
+    form.companyRomaji.value = job.company.romaji || "";
+    form.companyJp.value = job.company.jp || "";
+    form.industry.value = job.industry || "";
+    form.industryJp.value = job.industryJp || "";
+    form.location.value = job.location || "";
+    form.slots.value = job.slots || job.vacancies || "";
+    form.gender.value = job.gender || "all";
+    form.candidates.value = job.candidates || "";
+    form.salaryGross.value = job.salary?.gross || "";
+    form.salaryHourly.value = job.salary?.grossHourly || "";
+    form.salaryNet.value = job.salary?.net || "";
+    form.interviewDate.value = job.interview?.date || "";
+    form.interviewType.value = job.interview?.type || "offline";
+    form.description.value = job.description || "";
+    form.requirements.value = (job.requirements || []).join("\n");
+    form.mensetsuNotes.value = job.mensetsuNotes || "";
+
+    // Open modal
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+}
+
+// ===== History (audit trail hide/unhide) =====
+async function loadHistory() {
+    const panel = document.getElementById("historyPanel");
+    panel.innerHTML = `<div class="loading"><div class="spinner"></div><p>Memuat...</p></div>`;
+
+    try {
+        const res = await fetch(`${ADMIN_API}?log=visibility`, { headers: authHeaders() });
+        if (!res.ok) throw new Error("Failed");
+        const data = await res.json();
+        renderHistory(data.log || []);
+    } catch (err) {
+        panel.innerHTML = `<div class="reg-empty">Gagal memuat riwayat.</div>`;
+    }
+}
+
+function renderHistory(log) {
+    const panel = document.getElementById("historyPanel");
+    if (log.length === 0) {
+        panel.innerHTML = `<div class="reg-empty">Belum ada aktivitas hide/unhide. Riwayat akan muncul di sini setelah ada lowongan yang di-hide, lalu di-unhide kembali.</div>`;
+        return;
+    }
+
+    // Map job_id → company name
+    const companyMap = {};
+    for (const job of jobsData?.jobs || []) {
+        companyMap[job.id] = job.company.romaji;
+    }
+
+    const rows = log.map((entry) => {
+        const company = companyMap[entry.job_id] || entry.job_id;
+        const isHide = entry.action === "hide";
+        const actionLabel = isHide ? "🔒 Hide" : "👁 Unhide";
+        const actionClass = isHide ? "history-hide" : "history-unhide";
+        return `
+            <tr>
+                <td>
+                    <strong>${escapeHtml(company)}</strong>
+                    <br><small style="color:#94a3b8">${escapeHtml(entry.job_id)}</small>
+                </td>
+                <td><span class="history-action ${actionClass}">${actionLabel}</span></td>
+                <td>${formatDateTime(entry.timestamp)}</td>
+            </tr>
+        `;
+    }).join("");
+
+    panel.innerHTML = `
+        <div class="reg-table-wrap">
+            <table class="reg-table">
+                <thead>
+                    <tr>
+                        <th>Lowongan</th>
+                        <th>Aksi</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+        </div>
+        <p class="history-note">${log.length} aktivitas tercatat. Lowongan yang di-hide tetap bisa di-restore lewat tab Kelola Lowongan.</p>
+    `;
+}
