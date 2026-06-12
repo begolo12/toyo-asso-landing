@@ -4,7 +4,7 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { getDB, ensureSchema } from "./_db.js";
+import { getDB, ensureSchema } from "./db.js";
 
 const JOBS_FILE = path.join(process.cwd(), "data", "jobs.json");
 

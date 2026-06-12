@@ -5,7 +5,7 @@
 // Auth: password dari env ADMIN_PASSWORD (default "123") via header
 //       X-Admin-Password atau field body.password.
 
-import { getDB, ensureSchema } from "./_db.js";
+import { getDB, ensureSchema } from "./db.js";
 
 const REG_STATUSES = ["pending", "lolos", "tidak_lolos"];
 
