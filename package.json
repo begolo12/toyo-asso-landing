@@ -1,0 +1,13 @@
+{
+  "name": "toyo-asso-landing",
+  "version": "1.0.0",
+  "description": "Landing page rekrutmen TOYO ASSO KABUSHIKI GAISHA",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@vercel/kv": "^3.0.0"
+  }
+}

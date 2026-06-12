@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - TOYO ASSO Landing Page</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="container">
+        <header class="admin-header">
+            <h1>🔐 Admin Panel</h1>
+            <p class="subtitle">TOYO ASSO KABUSHIKI GAISHA — Kontrol Pendaftaran</p>
+        </header>
+
+        <!-- Login Form -->
+        <div id="loginSection" class="card">
+            <h2>Login Admin</h2>
+            <p class="hint">Masukkan password admin untuk melanjutkan.</p>
+            <form id="loginForm">
+                <label for="passwordInput">Password</label>
+                <input type="password" id="passwordInput" placeholder="Masukkan password" required>
+                <button type="submit" class="btn btn-primary">Masuk</button>
+                <p id="loginError" class="error-msg"></p>
+            </form>
+        </div>
+
+        <!-- Control Panel (hidden by default) -->
+        <div id="controlSection" class="card hidden">
+            <div class="status-display">
+                <span class="status-label">Status Pendaftaran Saat Ini:</span>
+                <div id="statusBadge" class="status-badge">—</div>
+            </div>
+
+            <div class="status-detail">
+                <small id="statusUpdated">—</small>
+            </div>
+
+            <div class="actions">
+                <button id="openBtn" class="btn btn-success">✓ BUKA Pendaftaran</button>
+                <button id="closeBtn" class="btn btn-danger">✕ TUTUP Pendaftaran</button>
+            </div>
+
+            <p id="actionMsg" class="action-msg"></p>
+
+            <div class="info-box">
+                <strong>ℹ️ Catatan:</strong>
+                <ul>
+                    <li>Tombol "BUKA" akan mengaktifkan form pendaftaran di landing page.</li>
+                    <li>Tombol "TUTUP" akan menyembunyikan tombol CTA & menampilkan banner "Pendaftaran Ditutup".</li>
+                    <li>Status tersimpan di Vercel KV (Redis) — berlaku real-time.</li>
+                </ul>
+            </div>
+
+            <button id="logoutBtn" class="btn btn-link">Keluar</button>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
