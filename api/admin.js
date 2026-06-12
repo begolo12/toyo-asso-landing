@@ -131,6 +131,12 @@ export default async function handler(req, res) {
                 return res.status(200).json({ success: true, regId, jobId: rJobId, status });
             }
 
+            // ---- clearRegistrations: hapus semua data pendaftar (reset) ----
+            if (action === "clearRegistrations") {
+                await sql`DELETE FROM registrations`;
+                return res.status(200).json({ success: true, deleted: true });
+            }
+
             // ---- toggle: buka/tutup lowongan ----
             if (action === "toggle" || (action === undefined && body.jobId && typeof body.isOpen === "boolean")) {
                 const { jobId: tJobId, isOpen } = body;

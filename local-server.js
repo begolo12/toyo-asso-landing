@@ -360,6 +360,13 @@ const server = http.createServer(async (req, res) => {
                 return sendJson(res, 200, { success: true, regId, jobId, status });
             }
 
+            // clearRegistrations: hapus semua data pendaftar (reset)
+            if (action === "clearRegistrations") {
+                store.registrations = {};
+                saveStore();
+                return sendJson(res, 200, { success: true, deleted: true });
+            }
+
             // toggle (backward compat dengan yang tanpa action field)
             if (action === "toggle" || (action === undefined && data.jobId && typeof data.isOpen === "boolean")) {
                 if (!data.jobId || typeof data.isOpen !== "boolean") {

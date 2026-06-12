@@ -400,6 +400,36 @@ document.getElementById("btnExportCSV").addEventListener("click", exportCSV);
 document.getElementById("btnExportExcel").addEventListener("click", exportExcel);
 document.getElementById("btnExportPDF").addEventListener("click", exportPDF);
 
+// ===== Reset Semua Data Pendaftar =====
+document.getElementById("btnResetRegs")?.addEventListener("click", async () => {
+    if (!confirm("⚠ Hapus SEMUA data pendaftar?\n\nSemua pendaftar (pending/lolos/tidak lolos) akan dihapus permanent. Slot lowongan akan kembali ke penuh.\n\nTindakan ini TIDAK bisa dibatalkan!")) return;
+
+    const btn = document.getElementById("btnResetRegs");
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = "Menghapus...";
+
+    try {
+        const res = await fetch(ADMIN_API, {
+            method: "POST",
+            headers: { ...authHeaders(), "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "clearRegistrations", password: adminPassword }),
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+            alert("✓ Semua data pendaftar telah dihapus. Slot lowongan di-reset.");
+            await loadRegistrations();
+        } else {
+            alert("Gagal: " + (result.error || "unknown error"));
+        }
+    } catch (err) {
+        alert("Gagal terhubung ke server: " + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    }
+});
+
 function exportRows() {
     // Build rows from currently filtered set
     const headers = ["No", "Nama", "No. HP", "Lowongan", "Lokasi", "Waktu Daftar", "Status"];
