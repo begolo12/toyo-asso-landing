@@ -86,7 +86,8 @@ async function loadJobsManagement() {
     list.innerHTML = `<div class="loading"><div class="spinner"></div><p>Memuat...</p></div>`;
 
     try {
-        const res = await fetch(JOBS_API);
+        // Pakai includeHidden + auth agar admin bisa lihat job yang di-hide dari web
+        const res = await fetch(`${JOBS_API}?includeHidden=1`, { headers: authHeaders() });
         if (!res.ok) throw new Error("Failed");
         jobsData = await res.json();
         jobMap = {};
@@ -107,11 +108,22 @@ function renderJobsList() {
 
     list.innerHTML = jobsData.jobs.map((job) => {
         const isOpen = jobsData.openStatus[job.id] !== false;
+        const isHidden = !!job.isHidden;
+        const slots = Number(job.slots || job.vacancies || 0);
+        const filled = Number(job.filled || 0);
+        const available = Math.max(0, slots - filled);
         return `
-            <div class="job-row" data-job-id="${escapeHtml(job.id)}">
+            <div class="job-row ${isHidden ? 'job-row-hidden' : ''}" data-job-id="${escapeHtml(job.id)}">
                 <div class="job-row-info">
-                    <div class="job-row-company">${escapeHtml(job.company.romaji)}</div>
-                    <div class="job-row-meta">${escapeHtml(job.industry)} · ${escapeHtml(job.location)} · ${job.vacancies} lowongan</div>
+                    <div class="job-row-company">
+                        ${escapeHtml(job.company.romaji)}
+                        ${isHidden ? '<span class="hidden-badge">🔒 HIDDEN</span>' : ''}
+                    </div>
+                    <div class="job-row-meta">
+                        ${escapeHtml(job.industry)} · ${escapeHtml(job.location)} · ${job.vacancies} lowongan
+                        ${slots > 0 ? ` · <span class="slot-pill ${available === 0 ? 'slot-full' : ''}">Slot ${available}/${slots}</span>` : ''}
+                        ${job.gender ? ` · <span class="gender-pill gender-${job.gender}">${job.gender === 'male' ? '👨 Pria' : job.gender === 'female' ? '👩 Wanita' : '👥 Semua'}</span>` : ''}
+                    </div>
                 </div>
                 <div class="job-row-status">
                     <span class="status-pill ${isOpen ? "open" : "closed"}">${isOpen ? "DIBUKA" : "DITUTUP"}</span>
@@ -120,6 +132,9 @@ function renderJobsList() {
                     <button class="btn btn-sm ${isOpen ? "btn-danger" : "btn-success"}" data-toggle="${escapeHtml(job.id)}" data-open="${isOpen ? "true" : "false"}">
                         ${isOpen ? "TUTUP" : "BUKA"}
                     </button>
+                    <button class="btn btn-sm ${isHidden ? 'btn-warning' : 'btn-secondary'}" data-visibility="${escapeHtml(job.id)}" data-hidden="${isHidden ? "true" : "false"}" title="${isHidden ? 'Tampilkan di web' : 'Sembunyikan dari web'}">
+                        ${isHidden ? "👁 UNHIDE" : "🔒 HIDE"}
+                    </button>
                 </div>
             </div>
         `;
@@ -127,6 +142,9 @@ function renderJobsList() {
 
     list.querySelectorAll("[data-toggle]").forEach((btn) => {
         btn.addEventListener("click", () => toggleJob(btn.dataset.toggle, btn.dataset.open === "true"));
+    });
+    list.querySelectorAll("[data-visibility]").forEach((btn) => {
+        btn.addEventListener("click", () => toggleVisibility(btn.dataset.visibility, btn.dataset.hidden === "true"));
     });
 }
 
@@ -147,6 +165,30 @@ async function toggleJob(jobId, currentlyOpen) {
             await loadJobsManagement();
         } else {
             alert(result.error || "Gagal update");
+            if (btn) btn.disabled = false;
+        }
+    } catch (err) {
+        alert("Gagal terhubung ke server");
+        if (btn) btn.disabled = false;
+    }
+}
+
+async function toggleVisibility(jobId, currentlyHidden) {
+    const newHidden = !currentlyHidden;
+    const btn = document.querySelector(`[data-visibility="${jobId}"]`);
+    if (btn) btn.disabled = true;
+
+    try {
+        const res = await fetch(ADMIN_API, {
+            method: "POST",
+            headers: { ...authHeaders(), "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "toggleVisibility", jobId, isHidden: newHidden, password: adminPassword }),
+        });
+        const result = await res.json();
+        if (res.ok && result.success) {
+            await loadJobsManagement();
+        } else {
+            alert(result.error || "Gagal update visibility");
             if (btn) btn.disabled = false;
         }
     } catch (err) {
@@ -529,6 +571,8 @@ if (adminPassword) {
 
         const job = {
             id: (fd.get("id") || "").toString().trim(),
+            gender: (fd.get("gender") || "all").toString(),
+            slots: Number(fd.get("slots") || 0),
             company: {
                 jp: (fd.get("companyJp") || "").toString().trim(),
                 romaji: (fd.get("companyRomaji") || "").toString().trim(),
@@ -536,7 +580,7 @@ if (adminPassword) {
             industry: (fd.get("industry") || "").toString().trim(),
             industryJp: (fd.get("industryJp") || "").toString().trim(),
             location: (fd.get("location") || "").toString().trim(),
-            vacancies: (fd.get("vacancies") || "").toString().trim(),
+            vacancies: Number(fd.get("slots") || 0),
             candidates: fd.get("candidates") ? Number(fd.get("candidates")) : 0,
             salary: {
                 gross: Number(fd.get("salaryGross")),

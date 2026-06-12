@@ -8,6 +8,8 @@
   "jobs": [
     {
       "id": "toyo-asso",
+      "gender": "male",
+      "slots": 2,
       "company": {
         "jp": "東洋圧送株式会社",
         "romaji": "TOYO ASSO KABUSHIKI GAISHA"
@@ -44,6 +46,8 @@
     },
     {
       "id": "hokuto-kaigo",
+      "gender": "all",
+      "slots": 4,
       "company": {
         "jp": "北斗介護サービス株式会社",
         "romaji": "HOKUTO KAIGO SERVICE K.K."
@@ -78,6 +82,8 @@
     },
     {
       "id": "yamato-welding",
+      "gender": "male",
+      "slots": 3,
       "company": {
         "jp": "大和溶接工業株式会社",
         "romaji": "YAMATO YOUSETSU KOGYOU K.K."
@@ -113,6 +119,8 @@
     },
     {
       "id": "hokkai-food",
+      "gender": "all",
+      "slots": 5,
       "company": {
         "jp": "北海食品加工株式会社",
         "romaji": "HOKKAI SHOKUHIN KAKOU K.K."
@@ -147,6 +155,8 @@
     },
     {
       "id": "torizen-shokuchoniku",
+      "gender": "female",
+      "slots": 10,
       "company": {
         "jp": "トリゼン食鳥肉協同組合",
         "romaji": "TORIZEN SHOKUCHONIKU KYOUDOU KUMIAI"
@@ -182,33 +192,6 @@
         "Tidak sedang mengikuti seleksi di tempat lain"
       ],
       "mensetsuNotes": "Mensetsu offline pertengahan Juli atau akhir Juli. Akan ada tes mencincang bawang bombay, kupas apel, dan tes kartu remi di hari H mensetsu."
-    },
-    {
-      "id": "test-job-xyz",
-      "company": {
-        "jp": "???????",
-        "romaji": "TEST K.K."
-      },
-      "industry": "Test Industry",
-      "industryJp": "???",
-      "location": "TEST, Jepang",
-      "vacancies": "3",
-      "candidates": 10,
-      "salary": {
-        "gross": 150000,
-        "grossHourly": 900,
-        "net": 120000
-      },
-      "interview": {
-        "date": "2026-09-01",
-        "type": "online"
-      },
-      "description": "Test job created via API",
-      "requirements": [
-        "Syarat 1",
-        "Syarat 2"
-      ],
-      "mensetsuNotes": "Test notes"
     }
   ]
 }

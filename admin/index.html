@@ -172,12 +172,22 @@
                     </label>
 
                     <label class="form-field">
-                        <span>Jumlah Lowongan *</span>
-                        <input type="text" name="vacancies" required maxlength="50" placeholder='Contoh: "5" atau "8-10"'>
+                        <span>Jumlah Lowongan (slot) *</span>
+                        <input type="number" name="slots" required min="1" placeholder="Contoh: 5">
+                        <small>Slot total. Otomatis berkurang saat pendaftar di-aprove (lolos).</small>
                     </label>
 
                     <label class="form-field">
-                        <span>Jumlah Kandidat</span>
+                        <span>Gender *</span>
+                        <select name="gender" required>
+                            <option value="all">Pria &amp; Wanita</option>
+                            <option value="male">Pria saja</option>
+                            <option value="female">Wanita saja</option>
+                        </select>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Jumlah Kandidat (initial)</span>
                         <input type="number" name="candidates" min="0" placeholder="30">
                     </label>
 

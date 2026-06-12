@@ -19,6 +19,7 @@ const formatDate = (iso) => {
 // State
 let jobs = [];
 let openStatus = {}; // jobId -> boolean
+let currentFilter = "all"; // all | male | female
 
 // ===== Load Jobs =====
 async function loadJobs() {
@@ -47,15 +48,19 @@ async function loadJobs() {
         const openCount = jobs.filter((j) => openStatus[j.id] !== false).length;
         countEl.textContent = `${openCount} dari ${jobs.length} lowongan sedang dibuka`;
 
-        container.innerHTML = jobs.map(renderJobCard).join("");
+        renderFilteredJobs();
 
         // Attach event listeners ke tombol daftar
-        container.querySelectorAll("[data-register-job]").forEach((btn) => {
-            btn.addEventListener("click", () => openRegisterModal(btn.dataset.registerJob));
-        });
-        // Attach event listeners ke tombol detail
-        container.querySelectorAll("[data-detail-job]").forEach((btn) => {
-            btn.addEventListener("click", () => openDetailModal(btn.dataset.detailJob));
+        document.getElementById("jobsContainer").addEventListener("click", handleJobsClick);
+        // Attach event listeners ke tombol filter
+        document.querySelectorAll("#filterBar .filter-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                currentFilter = btn.dataset.filter;
+                document.querySelectorAll("#filterBar .filter-btn").forEach((b) =>
+                    b.classList.toggle("active", b === btn)
+                );
+                renderFilteredJobs();
+            });
         });
     } catch (err) {
         console.error("Error loading jobs:", err);
@@ -69,13 +74,52 @@ async function loadJobs() {
     }
 }
 
+function getFilteredJobs() {
+    if (currentFilter === "all") return jobs;
+    return jobs.filter((j) => j.gender === currentFilter);
+}
+
+function renderFilteredJobs() {
+    const container = document.getElementById("jobsContainer");
+    const filtered = getFilteredJobs();
+    if (filtered.length === 0 && jobs.length > 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>Tidak Ada Lowongan ${currentFilter === "male" ? "Pria" : "Wanita"}</h3>
+                <p>Coba filter lain atau cek kembali nanti.</p>
+            </div>
+        `;
+        return;
+    }
+    container.innerHTML = filtered.map(renderJobCard).join("");
+}
+
+function handleJobsClick(e) {
+    const detailBtn = e.target.closest("[data-detail-job]");
+    if (detailBtn) {
+        openDetailModal(detailBtn.dataset.detailJob);
+        return;
+    }
+    const registerBtn = e.target.closest("[data-register-job]");
+    if (registerBtn) {
+        openRegisterModal(registerBtn.dataset.registerJob);
+    }
+}
+
 function renderJobCard(job) {
     const isOpen = openStatus[job.id] !== false; // default true
+    const isHidden = !!job.isHidden;
     const statusClass = isOpen ? "open" : "closed";
     const statusLabel = isOpen ? "DIBUKA" : "DITUTUP";
+    const slots = Number(job.slots || job.vacancies || 0);
+    const available = Number(job.available != null ? job.available : Math.max(0, slots - Number(job.filled || 0)));
+    const filledPct = slots > 0 ? (available / slots) * 100 : 0;
+    const genderLabel = job.gender === "male" ? "Pria" : job.gender === "female" ? "Wanita" : null;
+    const genderIcon = job.gender === "male" ? "👨" : job.gender === "female" ? "👩" : null;
+    const genderClass = job.gender === "male" ? "gender-male" : job.gender === "female" ? "gender-female" : "";
 
     return `
-        <div class="job-card ${isOpen ? "" : "closed"}">
+        <div class="job-card ${isOpen ? "" : "closed"} ${isHidden ? 'job-card-hidden' : ''}">
             <div class="job-card-header">
                 <div class="job-card-company">
                     <div class="job-card-company-name">
@@ -84,8 +128,8 @@ function renderJobCard(job) {
                     </div>
                     <span class="job-status-badge ${statusClass}">${statusLabel}</span>
                 </div>
-                <div class="job-card-industry">${escapeHtml(job.industry)}</div>
-                <div class="job-card-industry-jp jp">${escapeHtml(job.industryJp || "")}</div>
+                <div class="job-card-industry">${escapeHtml(job.industry)}${genderLabel ? ` <span class="job-gender-tag ${genderClass}">${genderIcon} ${genderLabel}</span>` : ""}</div>
+                <div class="job-card-industry-jp">${escapeHtml(job.industryJp || "")}</div>
             </div>
 
             <div class="job-card-body">
@@ -97,7 +141,7 @@ function renderJobCard(job) {
                 <div class="job-info-row">
                     <span class="job-info-icon">👥</span>
                     <span class="job-info-label">Dicari</span>
-                    <span class="job-info-value">${job.vacancies} orang (kandidat ${job.candidates})</span>
+                    <span class="job-info-value">${escapeHtml(String(job.vacancies))} orang (kandidat ${job.candidates || 0})</span>
                 </div>
 
                 <div class="job-salary">
@@ -110,6 +154,18 @@ function renderJobCard(job) {
                         <span class="job-salary-value job-salary-value-lg">${formatYen(job.salary.net)}/bln</span>
                     </div>
                 </div>
+
+                ${slots > 0 ? `
+                <div class="job-slot">
+                    <div class="job-slot-info">
+                        <span class="job-slot-label">🎯 Slot tersisa</span>
+                        <span class="job-slot-value ${available === 0 ? 'job-slot-full' : ''}">${available} / ${slots}</span>
+                    </div>
+                    <div class="job-slot-bar">
+                        <div class="job-slot-fill" style="width: ${filledPct}%"></div>
+                    </div>
+                </div>
+                ` : ""}
             </div>
 
             <div class="job-card-footer">
@@ -230,7 +286,10 @@ function renderDetailBody(job) {
     const salaryHourly = job.salary.grossHourly
         ? ` <span class="detail-value-sub">(${formatYen(job.salary.grossHourly)}/jam)</span>`
         : "";
-    const vacanciesText = `${job.vacancies} orang (kandidat ${job.candidates})`;
+    const vacanciesText = `${job.vacancies} orang (kandidat ${job.candidates || 0})`;
+    const slots = Number(job.slots || job.vacancies || 0);
+    const available = Number(job.available != null ? job.available : Math.max(0, slots - Number(job.filled || 0)));
+    const genderText = job.gender === "male" ? "Pria saja" : job.gender === "female" ? "Wanita saja" : "Pria & Wanita";
 
     let html = `
         <div class="detail-grid">
@@ -246,6 +305,10 @@ function renderDetailBody(job) {
                 <span class="detail-label">👥 Dicari</span>
                 <span class="detail-value">${escapeHtml(vacanciesText)}</span>
             </div>
+            <div class="detail-item">
+                <span class="detail-label">👤 Gender</span>
+                <span class="detail-value">${genderText}</span>
+            </div>
             <div class="detail-item detail-item-salary">
                 <span class="detail-label">💰 Gaji Kotor</span>
                 <span class="detail-value">${formatYen(job.salary.gross)}/bln${salaryHourly}</span>
@@ -258,6 +321,12 @@ function renderDetailBody(job) {
                 <span class="detail-label">📅 Interview</span>
                 <span class="detail-value">${job.interview.type === "offline" ? "Offline" : "Online"} — <strong>${formatDate(job.interview.date)}</strong></span>
             </div>
+            ${slots > 0 ? `
+            <div class="detail-item">
+                <span class="detail-label">🎯 Slot Tersisa</span>
+                <span class="detail-value ${available === 0 ? 'detail-value-full' : ''}">${available} dari ${slots} ${available === 0 ? '· PENUH' : ''}</span>
+            </div>
+            ` : ""}
         </div>
     `;
 

@@ -38,7 +38,7 @@ const MIME = {
 };
 
 // ===== File-backed store =====
-let store = { jobsStatus: {}, registrations: {} };
+let store = { jobsStatus: {}, registrations: {}, jobVisibility: {} };
 
 function loadStoreSync() {
     try {
@@ -47,6 +47,7 @@ function loadStoreSync() {
             const parsed = JSON.parse(raw);
             store.jobsStatus = parsed.jobsStatus || {};
             store.registrations = parsed.registrations || {};
+            store.jobVisibility = parsed.jobVisibility || {};
         } else {
             // Default: semua lowongan terbuka
             try {
@@ -58,7 +59,7 @@ function loadStoreSync() {
         }
     } catch (err) {
         console.warn("[WARN] Gagal baca store, mulai fresh:", err.message);
-        store = { jobsStatus: {}, registrations: {} };
+        store = { jobsStatus: {}, registrations: {}, jobVisibility: {} };
     }
 }
 
@@ -199,9 +200,34 @@ const server = http.createServer(async (req, res) => {
                     status[job.id] = true; // default open
                 }
             }
+            // Hitung filled dari registrations berstatus "lolos"
+            const filledMap = {};
+            for (const job of jobsData.jobs) {
+                const regs = await localKV.lrange(`reg:${job.id}`, 0, -1);
+                let n = 0;
+                for (const r of regs) {
+                    try {
+                        const obj = JSON.parse(r);
+                        if (obj && obj.status === "lolos") n++;
+                    } catch { /* skip */ }
+                }
+                filledMap[job.id] = n;
+            }
+            // Enrich jobs dengan slots/filled/available, auto-close kalau habis
+            const enriched = jobsData.jobs.map((j) => {
+                const slots = Number(j.slots || j.vacancies || 0);
+                const filled = filledMap[j.id] || 0;
+                const available = Math.max(0, slots - filled);
+                if (slots > 0 && available <= 0) status[j.id] = false;
+                const isHidden = !!store.jobVisibility[j.id];
+                return { ...j, slots, filled, available, isHidden };
+            });
+            // Filter hidden (admin bisa lihat semua dengan ?includeHidden=1, tanpa auth di local)
+            const wantAll = url.includes("includeHidden=1");
+            const visible = wantAll ? enriched : enriched.filter((j) => !j.isHidden);
             return sendJson(res, 200, {
                 brand: jobsData.brand,
-                jobs: jobsData.jobs,
+                jobs: visible,
                 openStatus: status,
             });
         } catch (e) {
@@ -310,6 +336,26 @@ const server = http.createServer(async (req, res) => {
                 if (!found) return sendJson(res, 404, { error: "Pendaftar tidak ditemukan" });
                 await localKV.del(key);
                 for (const item of updated) await localKV.rpush(key, item);
+
+                // Auto-close job jika slot habis
+                try {
+                    let lolosCount = 0;
+                    for (const r of updated) {
+                        try {
+                            const obj = JSON.parse(r);
+                            if (obj && obj.status === "lolos") lolosCount++;
+                        } catch { /* skip */ }
+                    }
+                    const jobsData = JSON.parse(fs.readFileSync(JOBS_FILE, "utf-8"));
+                    const job = (jobsData.jobs || []).find((j) => j.id === jobId);
+                    const slots = job ? Number(job.slots || job.vacancies || 0) : 0;
+                    if (slots > 0 && lolosCount >= slots) {
+                        await localKV.hset("jobs:open", { [jobId]: "0" });
+                    }
+                } catch (slotErr) {
+                    console.warn("[setStatus] slot tracking skipped:", slotErr.message);
+                }
+
                 return sendJson(res, 200, { success: true, regId, jobId, status });
             }
 
@@ -352,6 +398,8 @@ const server = http.createServer(async (req, res) => {
                 }
                 const newJob = {
                     id: cleanId,
+                    gender: ["male", "female", "all"].includes(job.gender) ? job.gender : "all",
+                    slots: Number(job.slots) || Number(job.vacancies) || 0,
                     company: {
                         jp: String(job.company.jp).trim(),
                         romaji: String(job.company.romaji).trim(),
@@ -389,7 +437,16 @@ const server = http.createServer(async (req, res) => {
                 }
             }
 
-            return sendJson(res, 400, { error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', atau 'createJob'." });
+            // toggleVisibility: hide/unhide job dari web (admin masih bisa lihat)
+            if (action === "toggleVisibility") {
+                const { jobId, isHidden } = data;
+                if (!jobId) return sendJson(res, 400, { error: "jobId wajib diisi" });
+                store.jobVisibility[jobId] = !!isHidden;
+                saveStore();
+                return sendJson(res, 200, { success: true, jobId, isHidden: !!isHidden });
+            }
+
+            return sendJson(res, 400, { error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', atau 'toggleVisibility'." });
         }
 
         // GET: list

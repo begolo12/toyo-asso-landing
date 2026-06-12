@@ -42,6 +42,18 @@
             <h2 class="section-title">Lowongan Tersedia</h2>
             <p class="section-subtitle" id="jobsCount">Memuat lowongan...</p>
 
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" data-filter="all" type="button">
+                    <span class="filter-icon">🌐</span> Semua
+                </button>
+                <button class="filter-btn" data-filter="male" type="button">
+                    <span class="filter-icon">👨</span> Pria
+                </button>
+                <button class="filter-btn" data-filter="female" type="button">
+                    <span class="filter-icon">👩</span> Wanita
+                </button>
+            </div>
+
             <div id="jobsContainer" class="jobs-grid">
                 <!-- Jobs akan di-render di sini oleh script.js -->
                 <div class="loading-state">

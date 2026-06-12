@@ -715,6 +715,108 @@ body {
     }
 }
 
+/* ===== Job Row Hidden State ===== */
+.job-row-hidden {
+    opacity: 0.55;
+    background: #f8fafc;
+    border-style: dashed !important;
+}
+
+.hidden-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+
+/* ===== Slot Pill ===== */
+.slot-pill {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 2px 8px;
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.slot-pill.slot-full {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+/* ===== Gender Pill ===== */
+.gender-pill {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 2px 8px;
+    background: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #e9d5ff;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.gender-pill.gender-female {
+    background: #fce7f3;
+    color: #9d174d;
+    border-color: #fbcfe8;
+}
+
+.gender-pill.gender-all {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+
+/* ===== Job Row Actions: 2 buttons ===== */
+.job-row-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.job-row-actions .btn {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    padding: 6px 12px;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: #fff;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
 /* ===== Tab Header (title + action button) ===== */
 .tab-header {
     display: flex;

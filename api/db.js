@@ -41,6 +41,12 @@ export async function ensureSchema() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`;
+    // Visibility (hide from web, tetap ada di admin)
+    await sql`CREATE TABLE IF NOT EXISTS job_visibility (
+        job_id     TEXT PRIMARY KEY,
+        is_hidden  BOOLEAN NOT NULL DEFAULT FALSE,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )`;
     // Pendaftar
     await sql`CREATE TABLE IF NOT EXISTS registrations (
         id                TEXT PRIMARY KEY,

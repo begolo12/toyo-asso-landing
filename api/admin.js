@@ -1,12 +1,15 @@
 // api/admin.js
-// Endpoint admin: toggle job, set status pendaftar, create job.
-// Memakai Neon Postgres (lihat api/_db.js).
+// Endpoint admin: toggle job, set status pendaftar, create job, hide/unhide.
+// Memakai Neon Postgres (lihat api/db.js).
 //
 // Auth: password dari env ADMIN_PASSWORD (default "123") via header
 //       X-Admin-Password atau field body.password.
 
 import { getDB, ensureSchema } from "./db.js";
+import fs from "fs/promises";
+import path from "path";
 
+const JOBS_FILE = path.join(process.cwd(), "data", "jobs.json");
 const REG_STATUSES = ["pending", "lolos", "tidak_lolos"];
 
 function checkAuth(req) {
@@ -92,6 +95,28 @@ export default async function handler(req, res) {
                 if (result.count === 0) {
                     return res.status(404).json({ error: "Pendaftar tidak ditemukan" });
                 }
+
+                // Auto-close job jika slot habis (filled >= slots)
+                try {
+                    const filledRows = await sql`
+                        SELECT COUNT(*)::int AS filled
+                        FROM registrations
+                        WHERE job_id = ${rJobId} AND status = 'lolos'
+                    `;
+                    const filled = Number(filledRows[0]?.filled || 0);
+                    const slots = await getJobSlots(rJobId, sql);
+                    if (slots > 0 && filled >= slots) {
+                        await sql`
+                            INSERT INTO job_status (job_id, is_open, updated_at)
+                            VALUES (${rJobId}, FALSE, NOW())
+                            ON CONFLICT (job_id)
+                            DO UPDATE SET is_open = FALSE, updated_at = NOW()
+                        `;
+                    }
+                } catch (slotErr) {
+                    console.warn("[setStatus] slot tracking skipped:", slotErr.message);
+                }
+
                 return res.status(200).json({ success: true, regId, jobId: rJobId, status });
             }
 
@@ -152,6 +177,8 @@ export default async function handler(req, res) {
 
                 const newJob = {
                     id: cleanId,
+                    gender: ["male", "female", "all"].includes(job.gender) ? job.gender : "all",
+                    slots: Number(job.slots) || Number(job.vacancies) || 0,
                     company: {
                         jp: String(job.company.jp).trim(),
                         romaji: String(job.company.romaji).trim(),
@@ -187,8 +214,23 @@ export default async function handler(req, res) {
                 return res.status(200).json({ success: true, job: newJob });
             }
 
+            // ---- toggleVisibility: hide/unhide job dari web (admin masih bisa lihat) ----
+            if (action === "toggleVisibility") {
+                const { jobId, isHidden } = body;
+                if (!jobId) {
+                    return res.status(400).json({ error: "jobId wajib diisi" });
+                }
+                await sql`
+                    INSERT INTO job_visibility (job_id, is_hidden, updated_at)
+                    VALUES (${jobId}, ${!!isHidden}, NOW())
+                    ON CONFLICT (job_id)
+                    DO UPDATE SET is_hidden = ${!!isHidden}, updated_at = NOW()
+                `;
+                return res.status(200).json({ success: true, jobId, isHidden: !!isHidden });
+            }
+
             return res.status(400).json({
-                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', atau 'createJob'.",
+                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', atau 'toggleVisibility'.",
             });
         } catch (err) {
             console.error("Admin action error:", err);
@@ -210,4 +252,18 @@ function rowToReg(r) {
         statusUpdatedAt: r.status_updated_at,
         ip: r.ip,
     };
+}
+
+// Cari nilai `slots` sebuah job (cek JSON file dulu, fallback ke tabel jobs)
+async function getJobSlots(jobId, sql) {
+    try {
+        const jobsData = JSON.parse(await fs.readFile(JOBS_FILE, "utf-8"));
+        const fromFile = (jobsData.jobs || []).find((j) => j.id === jobId);
+        if (fromFile && fromFile.slots) return Number(fromFile.slots);
+        const rows = await sql`SELECT data FROM jobs WHERE id = ${jobId} LIMIT 1`;
+        if (rows.length > 0 && rows[0].data?.slots) return Number(rows[0].data.slots);
+    } catch {
+        // ignore
+    }
+    return 0;
 }
