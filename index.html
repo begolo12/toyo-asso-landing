@@ -3,117 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lowongan Kerja TOYO ASSO KABUSHIKI GAISHA - コンクリート圧送</title>
-    <meta name="description" content="Lowongan kerja konstruksi penuangan beton coran di Chiba, Jepang. Gaji 212.763 yen/bulan. Interview 12 Juli.">
+    <title>LPK PJB - Lowongan Kerja ke Jepang</title>
+    <meta name="description" content="LPK PJB / LPK - Putra Jabung Berkarya — Bekal Skill Kerja ke Jepang. Daftar lowongan kerja resmi ke Jepang.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 </head>
 <body>
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="container">
-            <div class="hero-badge">REKRUT BARU</div>
-            <h1 class="hero-title">
-                <span class="company-jp">東洋圧送株式会社</span>
-                <span class="company-romaji">TOYO ASSO KABUSHIKI GAISHA</span>
-            </h1>
-            <p class="hero-subtitle">Konstruksi Penuangan Beton Coran / コンクリート圧送</p>
-            <div class="hero-meta">
-                <div class="meta-item">
-                    <span class="meta-label">Lokasi</span>
-                    <span class="meta-value">CHIBA, Jepang 🇯🇵</span>
+    <!-- Header / Brand Bar -->
+    <header class="brand-header">
+        <div class="container brand-bar">
+            <a href="/" class="brand-link">
+                <img class="brand-logo" src="/assets/logo-lpk.png" alt="LPK Putra Jabung Berkarya">
+                <div class="brand-text">
+                    <div class="brand-name">LPK Putra Jabung Berkarya</div>
+                    <div class="brand-subname">Lembaga Pelatihan Kerja</div>
                 </div>
-                <div class="meta-item">
-                    <span class="meta-label">Dibutuhkan</span>
-                    <span class="meta-value">2 Orang</span>
-                </div>
-                <div class="meta-item">
-                    <span class="meta-label">Interview</span>
-                    <span class="meta-value">12 Juli (Offline)</span>
-                </div>
-            </div>
-            <a href="#ctaSection" id="heroCta" class="cta-button cta-primary">DAFTAR SEKARANG</a>
+            </a>
+            <a href="/admin/" class="admin-link-header">Admin</a>
         </div>
     </header>
 
-    <!-- Closed Banner (hidden by default) -->
-    <div id="closedBanner" class="closed-banner hidden">
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <strong>⛔ Pendaftaran Sedang Ditutup</strong>
-            <span>Mohon maaf, pendaftaran untuk saat ini belum/sudah ditutup. Silakan cek kembali nanti.</span>
+            <h1 class="hero-title">Lowongan Kerja ke Jepang</h1>
+            <p class="hero-subtitle">Bekal Skill Kerja ke Jepang — Resmi & Terpercaya</p>
+            <p class="hero-description">Pilih lowongan yang sesuai dengan keahlian dan minat Anda. Proses seleksi terbuka dan transparan.</p>
+            <a href="#lowongan" class="cta-button">LIHAT LOWONGAN</a>
+        </div>
+    </section>
+
+    <!-- Job Listings -->
+    <section class="section jobs-section" id="lowongan">
+        <div class="container">
+            <h2 class="section-title">Lowongan Tersedia</h2>
+            <p class="section-subtitle" id="jobsCount">Memuat lowongan...</p>
+
+            <div id="jobsContainer" class="jobs-grid">
+                <!-- Jobs akan di-render di sini oleh script.js -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Memuat lowongan...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info / Trust Section -->
+    <section class="section trust-section">
+        <div class="container">
+            <h2 class="section-title">Mengapa LPK PJB?</h2>
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">✓</div>
+                    <h3>Resmi & Legal</h3>
+                    <p>Lembaga pelatihan kerja terdaftar resmi dengan pengalaman mengirim TKI ke Jepang.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🤝</div>
+                    <h3>Mitra Terpercaya</h3>
+                    <p>Bekerja sama dengan perusahaan Jepang yang sudah terverifikasi.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">📚</div>
+                    <h3>Pelatihan Bahasa</h3>
+                    <p>Pembelajaran bahasa Jepang intensif sebelum keberangkatan.</p>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">💼</div>
+                    <h3>Penempatan Kerja</h3>
+                    <p>Penempatan sesuai skill dan bidang keahlian masing-masing kandidat.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog">
+        <div class="modal-overlay" data-close-modal></div>
+        <div class="modal-content">
+            <button class="modal-close" data-close-modal aria-label="Tutup">&times;</button>
+
+            <div class="modal-header">
+                <h2>Form Pendaftaran</h2>
+                <p class="modal-subtitle" id="modalJobTitle">—</p>
+            </div>
+
+            <form id="registerForm" class="register-form" novalidate>
+                <input type="hidden" id="jobId" name="jobId" required>
+
+                <div class="form-group">
+                    <label for="regName">Nama Lengkap <span class="required">*</span></label>
+                    <input type="text" id="regName" name="name" placeholder="Nama lengkap Anda" required maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="regPhone">Nomor Handphone <span class="required">*</span></label>
+                    <input type="tel" id="regPhone" name="phone" placeholder="08xxxxxxxxxx" required pattern="[0-9+\-\s]{8,20}">
+                </div>
+
+                <div id="formError" class="form-error hidden"></div>
+
+                <button type="submit" id="submitBtn" class="btn-submit">KIRIM PENDAFTARAN</button>
+
+                <p class="form-note">Pendaftaran gratis. Tim kami akan menghubungi Anda untuk tahap selanjutnya.</p>
+            </form>
+
+            <div id="successState" class="success-state hidden">
+                <div class="success-icon">✓</div>
+                <h3>Pendaftaran Berhasil!</h3>
+                <p>Terima kasih telah mendaftar. Tim LPK PJB akan menghubungi Anda dalam 1-3 hari kerja melalui WhatsApp.</p>
+                <button class="btn-secondary" data-close-modal>Tutup</button>
+            </div>
         </div>
     </div>
 
-    <!-- Salary Section -->
-    <section class="section salary-section">
-        <div class="container">
-            <h2 class="section-title">Informasi Gaji</h2>
-            <div class="salary-grid">
-                <div class="salary-card">
-                    <div class="salary-label">Gaji Kotor / Bulan</div>
-                    <div class="salary-value">¥212.763</div>
-                    <div class="salary-detail">¥1.226 / jam</div>
-                </div>
-                <div class="salary-card highlight">
-                    <div class="salary-label">Gaji Bersih / Bulan</div>
-                    <div class="salary-value">¥140.000</div>
-                    <div class="salary-detail">Take home pay</div>
-                </div>
+    <!-- Job Detail Modal -->
+    <div id="detailModal" class="modal hidden" aria-hidden="true" role="dialog">
+        <div class="modal-overlay" data-close-detail></div>
+        <div class="modal-content modal-content-wide">
+            <button class="modal-close" data-close-detail aria-label="Tutup">&times;</button>
+
+            <div class="modal-header">
+                <h2 id="detailCompanyJp" class="jp">—</h2>
+                <p class="modal-subtitle" id="detailCompanyRomaji">—</p>
+            </div>
+
+            <div class="detail-body" id="detailBody">
+                <!-- Populated by script.js -->
+            </div>
+
+            <div class="detail-footer">
+                <button class="btn-secondary" data-close-detail>Tutup</button>
+                <button class="btn-primary" id="detailDaftarBtn">DAFTAR SEKARANG</button>
             </div>
         </div>
-    </section>
-
-    <!-- Requirements Section -->
-    <section class="section requirements-section">
-        <div class="container">
-            <h2 class="section-title">Syarat & Ketentuan</h2>
-            <ol class="requirements-list">
-                <li>Laki-laki</li>
-                <li>Umur 20–28 tahun</li>
-                <li>Tinggi badan minimal <strong>160 cm</strong></li>
-                <li>Sudah melakukan pra MCU (Medical Check Up)</li>
-                <li><strong>Berpengalaman</strong> di bidang konstruksi</li>
-                <li>Minimal lulus SMK atau SMA sederajat</li>
-                <li>Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni</li>
-                <li>Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)</li>
-                <li>Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar</li>
-                <li>Tidak berkacamata, tidak bertato, dan tidak bertindik</li>
-                <li>Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi</li>
-                <li>Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan</li>
-                <li>Tidak sedang mengikuti seleksi di tempat lain</li>
-            </ol>
-        </div>
-    </section>
-
-    <!-- Important Notice Section -->
-    <section class="section notice-section">
-        <div class="container">
-            <div class="notice-card">
-                <div class="notice-icon">📅</div>
-                <h3>Mensetsu (Interview) Offline</h3>
-                <p class="notice-date">12 JULI</p>
-                <p>Siapkan diri Anda untuk interview offline. Detail lokasi dan waktu akan diinformasikan setelah pendaftaran.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="section cta-section" id="ctaSection">
-        <div class="container">
-            <h2 class="section-title">Tertarik Melamar?</h2>
-            <p class="cta-text">Pastikan Anda telah memenuhi semua syarat di atas. Klik tombol di bawah untuk mengisi formulir pendaftaran.</p>
-            <a href="#" id="googleFormLink" class="cta-button cta-large">
-                ISI FORMULIR PENDAFTARAN
-            </a>
-            <p class="cta-note">Pendaftaran gratis. Tidak ada biaya apapun.</p>
-        </div>
-    </section>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p class="footer-company">東洋圧送株式会社 / TOYO ASSO KABUSHIKI GAISHA</p>
-            <p class="footer-tagline">Chiba, Japan — コンクリート圧送</p>
-            <p class="footer-copy">© 2026 All rights reserved. · <a href="/admin/" class="admin-link">Admin</a></p>
+            <p class="footer-brand"><strong>LPK PJB</strong> — LPK - Putra Jabung Berkarya</p>
+            <p class="footer-tagline">Bekal Skill Kerja ke Jepang</p>
+            <p class="footer-copy">© 2026 LPK PJB. All rights reserved. · <a href="/admin/" class="admin-link">Admin Panel</a></p>
         </div>
     </footer>
 

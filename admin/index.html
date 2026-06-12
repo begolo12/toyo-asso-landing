@@ -3,59 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - TOYO ASSO Landing Page</title>
+    <title>Admin Panel - LPK PJB</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="stylesheet" href="admin.css">
+    <!-- PDF (jsPDF + autoTable) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <!-- Excel (SheetJS) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header class="admin-header">
-            <h1>🔐 Admin Panel</h1>
-            <p class="subtitle">TOYO ASSO KABUSHIKI GAISHA — Kontrol Pendaftaran</p>
-        </header>
-
-        <!-- Login Form -->
-        <div id="loginSection" class="card">
-            <h2>Login Admin</h2>
-            <p class="hint">Masukkan password admin untuk melanjutkan.</p>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <span class="brand-mark-nip">PJB</span>
+                </div>
+                <div class="login-brand-text">
+                    <div class="brand-name">LPK PJB</div>
+                    <div class="brand-subname">LPK - Putra Jabung Berkarya</div>
+                </div>
+            </div>
+            <h1>Admin Panel</h1>
+            <p class="login-subtitle">Kontrol Pendaftaran Lowongan</p>
             <form id="loginForm">
-                <label for="passwordInput">Password</label>
-                <input type="password" id="passwordInput" placeholder="Masukkan password" required>
+                <label for="passwordInput">Password Admin</label>
+                <input type="password" id="passwordInput" placeholder="Masukkan password" required autofocus>
                 <button type="submit" class="btn btn-primary">Masuk</button>
                 <p id="loginError" class="error-msg"></p>
             </form>
         </div>
+    </div>
 
-        <!-- Control Panel (hidden by default) -->
-        <div id="controlSection" class="card hidden">
-            <div class="status-display">
-                <span class="status-label">Status Pendaftaran Saat Ini:</span>
-                <div id="statusBadge" class="status-badge">—</div>
+    <!-- Dashboard (hidden until login) -->
+    <div id="dashboard" class="dashboard hidden">
+        <header class="dash-header">
+            <div class="container dash-header-inner">
+                <div class="dash-brand">
+                    <div class="brand-mark" aria-hidden="true">
+                        <span class="brand-mark-nip">PJB</span>
+                    </div>
+                    <div>
+                        <div class="dash-title">Admin Panel</div>
+                        <div class="dash-subtitle">LPK PJB</div>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn btn-link">Keluar</button>
+            </div>
+        </header>
+
+        <main class="container dash-main">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" data-tab="jobs">Kelola Lowongan</button>
+                <button class="tab" data-tab="registrations">Data Pendaftar</button>
             </div>
 
-            <div class="status-detail">
-                <small id="statusUpdated">—</small>
-            </div>
+            <!-- Tab: Jobs -->
+            <section id="tab-jobs" class="tab-content active">
+                <div class="tab-header">
+                    <div>
+                        <h2>Status Lowongan</h2>
+                        <p class="hint">Buka atau tutup pendaftaran per lowongan. Status berlaku real-time di landing page.</p>
+                    </div>
+                    <button id="btnCreateJob" class="btn btn-primary">+ Tambah Lowongan</button>
+                </div>
+                <div id="jobsList" class="jobs-list">
+                    <div class="loading"><div class="spinner"></div><p>Memuat...</p></div>
+                </div>
+            </section>
 
-            <div class="actions">
-                <button id="openBtn" class="btn btn-success">✓ BUKA Pendaftaran</button>
-                <button id="closeBtn" class="btn btn-danger">✕ TUTUP Pendaftaran</button>
-            </div>
+            <!-- Tab: Registrations -->
+            <section id="tab-registrations" class="tab-content">
+                <h2>Data Pendaftar</h2>
+                <p class="hint">Semua pendaftar dari semua lowongan. Data diurutkan dari yang terbaru.</p>
 
-            <p id="actionMsg" class="action-msg"></p>
+                <!-- Filter bar -->
+                <div class="reg-toolbar">
+                    <div class="reg-toolbar-left">
+                        <label class="reg-filter">
+                            <span>Lowongan</span>
+                            <select id="filterJob">
+                                <option value="">Semua Lowongan</option>
+                            </select>
+                        </label>
+                        <label class="reg-filter">
+                            <span>Status</span>
+                            <select id="filterStatus">
+                                <option value="">Semua Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="lolos">Lolos</option>
+                                <option value="tidak_lolos">Tidak Lolos</option>
+                            </select>
+                        </label>
+                        <label class="reg-filter reg-filter-search">
+                            <span>Cari</span>
+                            <input type="text" id="filterSearch" placeholder="Nama / HP..." />
+                        </label>
+                    </div>
+                    <div class="reg-toolbar-right">
+                        <button id="btnRefresh" class="btn btn-sm">Refresh</button>
+                        <button id="btnExportPDF" class="btn btn-sm btn-export">PDF</button>
+                        <button id="btnExportExcel" class="btn btn-sm btn-export">Excel</button>
+                        <button id="btnExportCSV" class="btn btn-sm btn-export">CSV</button>
+                    </div>
+                </div>
 
-            <div class="info-box">
-                <strong>ℹ️ Catatan:</strong>
-                <ul>
-                    <li>Tombol "BUKA" akan mengaktifkan form pendaftaran di landing page.</li>
-                    <li>Tombol "TUTUP" akan menyembunyikan tombol CTA & menampilkan banner "Pendaftaran Ditutup".</li>
-                    <li>Status tersimpan di Vercel KV (Redis) — berlaku real-time.</li>
-                </ul>
-            </div>
+                <!-- Stats summary -->
+                <div id="regStats" class="reg-stats">
+                    <div class="reg-stat"><span class="reg-stat-label">Total</span><span class="reg-stat-value" id="statTotal">0</span></div>
+                    <div class="reg-stat stat-lolos"><span class="reg-stat-label">Lolos</span><span class="reg-stat-value" id="statLolos">0</span></div>
+                    <div class="reg-stat stat-tidak"><span class="reg-stat-label">Tidak Lolos</span><span class="reg-stat-value" id="statTidak">0</span></div>
+                    <div class="reg-stat stat-pending"><span class="reg-stat-label">Pending</span><span class="reg-stat-value" id="statPending">0</span></div>
+                </div>
 
-            <button id="logoutBtn" class="btn btn-link">Keluar</button>
-        </div>
+                <!-- Table -->
+                <div id="registrationsPanel" class="registrations-panel">
+                    <div class="loading"><div class="spinner"></div><p>Memuat...</p></div>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script src="admin.js"></script>
+
+    <!-- Create Job Modal -->
+    <div id="createJobModal" class="modal hidden" aria-hidden="true" role="dialog">
+        <div class="modal-overlay" data-close-create-job></div>
+        <div class="modal-content modal-content-wide">
+            <button class="modal-close" data-close-create-job aria-label="Tutup">&times;</button>
+            <div class="modal-header">
+                <h2>Tambah Lowongan Baru</h2>
+                <p class="modal-subtitle">Lowongan akan langsung tersedia di landing page</p>
+            </div>
+
+            <form id="createJobForm" class="create-job-form" novalidate>
+                <div class="form-grid">
+                    <label class="form-field">
+                        <span>ID Lowongan *</span>
+                        <input type="text" name="id" required pattern="[a-z0-9\-]+" placeholder="contoh: abc-construction">
+                        <small>Huruf kecil, angka, strip. Contoh: <code>torizen-shokuchoniku</code></small>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Nama Perusahaan (Romaji) *</span>
+                        <input type="text" name="companyRomaji" required maxlength="200" placeholder="TORIZEN SHOKUCHONIKU KYOUDOU KUMIAI">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Nama Perusahaan (JP) *</span>
+                        <input type="text" name="companyJp" required maxlength="200" placeholder="トリゼン食鳥肉協同組合">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Industri *</span>
+                        <input type="text" name="industry" required maxlength="200" placeholder="Pengolahan Makanan Daging Ayam">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Industri (JP)</span>
+                        <input type="text" name="industryJp" maxlength="200" placeholder="食鳥処理加工業">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Lokasi *</span>
+                        <input type="text" name="location" required maxlength="200" placeholder="SAGA, Jepang">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Jumlah Lowongan *</span>
+                        <input type="text" name="vacancies" required maxlength="50" placeholder='Contoh: "5" atau "8-10"'>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Jumlah Kandidat</span>
+                        <input type="number" name="candidates" min="0" placeholder="30">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Gaji Kotor (¥/bln) *</span>
+                        <input type="number" name="salaryGross" required min="0" placeholder="165000">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Gaji Kotor / Jam (¥)</span>
+                        <input type="number" name="salaryHourly" min="0" placeholder="1030">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Gaji Bersih (¥/bln) *</span>
+                        <input type="number" name="salaryNet" required min="0" placeholder="130000">
+                    </label>
+
+                    <label class="form-field">
+                        <span>Tanggal Interview *</span>
+                        <input type="date" name="interviewDate" required>
+                    </label>
+
+                    <label class="form-field">
+                        <span>Tipe Interview *</span>
+                        <select name="interviewType" required>
+                            <option value="offline" selected>Offline</option>
+                            <option value="online">Online</option>
+                        </select>
+                    </label>
+                </div>
+
+                <label class="form-field form-field-full">
+                    <span>Deskripsi Pekerjaan</span>
+                    <textarea name="description" rows="2" placeholder="Contoh: Pengolahan Makanan Daging Ayam / 食鳥処理加工業..."></textarea>
+                </label>
+
+                <label class="form-field form-field-full">
+                    <span>Persyaratan</span>
+                    <textarea name="requirements" rows="8" placeholder="Satu syarat per baris. Contoh:&#10;Perempuan&#10;Umur 19-30 tahun&#10;Tinggi badan minimal 155 cm"></textarea>
+                </label>
+
+                <label class="form-field form-field-full">
+                    <span>Catatan Mensetsu</span>
+                    <textarea name="mensetsuNotes" rows="2" placeholder="Catatan tambahan tentang interview (tes khusus, dll)"></textarea>
+                </label>
+
+                <div id="createJobError" class="form-error hidden"></div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" data-close-create-job>Batal</button>
+                    <button type="submit" class="btn btn-primary" id="createJobSubmitBtn">Simpan Lowongan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

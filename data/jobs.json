@@ -1,0 +1,214 @@
+{
+  "brand": {
+    "name": "LPK PJB",
+    "fullName": "LPK PJB / LPK - Putra Jabung Berkarya",
+    "tagline": "Bekal Skill Kerja ke Jepang",
+    "logo": "/assets/logo.png"
+  },
+  "jobs": [
+    {
+      "id": "toyo-asso",
+      "company": {
+        "jp": "東洋圧送株式会社",
+        "romaji": "TOYO ASSO KABUSHIKI GAISHA"
+      },
+      "industry": "Konstruksi Penuangan Beton Coran",
+      "industryJp": "コンクリート圧送",
+      "location": "CHIBA, Jepang",
+      "vacancies": 2,
+      "candidates": 6,
+      "salary": {
+        "gross": 212763,
+        "grossHourly": 1226,
+        "net": 140000
+      },
+      "interview": {
+        "date": "2026-07-12",
+        "type": "offline"
+      },
+      "requirements": [
+        "Laki-laki",
+        "Umur 20–28 tahun",
+        "Tinggi badan minimal 160 cm",
+        "Sudah melakukan pra MCU (Medical Check Up)",
+        "Berpengalaman di bidang konstruksi",
+        "Minimal lulus SMK atau SMA sederajat",
+        "Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni",
+        "Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)",
+        "Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar",
+        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
+        "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
+        "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ]
+    },
+    {
+      "id": "hokuto-kaigo",
+      "company": {
+        "jp": "北斗介護サービス株式会社",
+        "romaji": "HOKUTO KAIGO SERVICE K.K."
+      },
+      "industry": "Perawatan Lansia (Caregiver)",
+      "industryJp": "介護スタッフ",
+      "location": "SAITAMA, Jepang",
+      "vacancies": 4,
+      "candidates": 12,
+      "salary": {
+        "gross": 185000,
+        "grossHourly": 1063,
+        "net": 135000
+      },
+      "interview": {
+        "date": "2026-08-05",
+        "type": "offline"
+      },
+      "requirements": [
+        "Pria atau wanita",
+        "Umur 20–30 tahun",
+        "Minimal lulus SMA / SMK sederajat",
+        "Telah belajar bahasa Jepang minimal 6 bulan / setara JLPT N4 (N3 lebih diutamakan)",
+        "Mempunyai sertifikat Kaigo (介護) menjadi nilai tambah",
+        "Pengalaman merawat lansia / di bidang kesehatan menjadi nilai tambah",
+        "Sehat jasmani dan rohani, tidak memiliki penyakit menular",
+        "Tidak berkacamata (lensa kontak diperbolehkan), tidak bertato, dan tidak bertindik",
+        "Bersabar, telaten, jujur, dan mempunyai jiwa melayani",
+        "Mau belajar budaya kerja Jepang dan sanggup tinggal di asrama perusahaan",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ]
+    },
+    {
+      "id": "yamato-welding",
+      "company": {
+        "jp": "大和溶接工業株式会社",
+        "romaji": "YAMATO YOUSETSU KOGYOU K.K."
+      },
+      "industry": "Konstruksi Pengelasan (Welder)",
+      "industryJp": "溶接工",
+      "location": "AICHI, Jepang",
+      "vacancies": 3,
+      "candidates": 8,
+      "salary": {
+        "gross": 245000,
+        "grossHourly": 1410,
+        "net": 165000
+      },
+      "interview": {
+        "date": "2026-07-25",
+        "type": "offline"
+      },
+      "requirements": [
+        "Laki-laki",
+        "Umur 20–28 tahun",
+        "Tinggi badan minimal 160 cm, berat badan proporsional",
+        "Minimal lulus SMK Teknik (Las / Mesin / Elektro) atau sederajat",
+        "Berpengalaman kerja las minimal 1 tahun (TIG / MIG / Stick / CO2)",
+        "Mempunyai sertifikat JWS (Japanese Welding Society) atau sertifikat BNSP menjadi nilai tambah",
+        "Telah belajar bahasa Jepang minimal 3 bulan / setara Bab 25 ke atas, bisa percakapan dasar",
+        "Mata sehat, tidak buta warna (tes Ishihara wajib)",
+        "Sehat dan bugar, tidak ada riwayat sakit pinggang / asma / epilepsy",
+        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
+        "Rajin, jujur, disiplin, dan patuh terhadap K3 (Keselamatan dan Kesehatan Kerja)",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ]
+    },
+    {
+      "id": "hokkai-food",
+      "company": {
+        "jp": "北海食品加工株式会社",
+        "romaji": "HOKKAI SHOKUHIN KAKOU K.K."
+      },
+      "industry": "Pengolahan & Pengemasan Makanan",
+      "industryJp": "食品加工・包装",
+      "location": "HOKKAIDO, Jepang",
+      "vacancies": 5,
+      "candidates": 15,
+      "salary": {
+        "gross": 175000,
+        "grossHourly": 1006,
+        "net": 125000
+      },
+      "interview": {
+        "date": "2026-08-10",
+        "type": "online"
+      },
+      "requirements": [
+        "Pria atau wanita",
+        "Umur 19–28 tahun",
+        "Minimal lulus SMA / SMK sederajat",
+        "Telah belajar bahasa Jepang minimal 3 bulan / setara Bab 20 ke atas",
+        "Bersedia kerja di suhu dingin (cold storage 2–10°C) dan shift (pagi / siang / malam)",
+        "Tidak memiliki alergi seafood, daging sapi, daging babi, telur, atau produk turunannya",
+        "Sehat jasmani dan rohani, tidak memiliki penyakit menular / kulit",
+        "Tidak bertato, tidak bertindik (perempuan tidak diharuskan melepas anting polos)",
+        "Rajin, jujur, teliti, dan bisa bekerja dalam tim",
+        "Pengalaman di pabrik pengolahan makanan / produksi menjadi nilai tambah",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ]
+    },
+    {
+      "id": "torizen-shokuchoniku",
+      "company": {
+        "jp": "トリゼン食鳥肉協同組合",
+        "romaji": "TORIZEN SHOKUCHONIKU KYOUDOU KUMIAI"
+      },
+      "industry": "Pengolahan Makanan Daging Ayam",
+      "industryJp": "食鳥処理加工業",
+      "location": "SAGA, Jepang",
+      "vacancies": "8-10",
+      "candidates": 30,
+      "salary": {
+        "gross": 165000,
+        "grossHourly": 1030,
+        "net": 130000
+      },
+      "interview": {
+        "date": "2026-07-20",
+        "type": "offline"
+      },
+      "description": "Pengolahan Makanan Daging Ayam / 食鳥処理加工業・食鳥肉の解体加工などの作業員 (pekerja pemotongan & pengolahan daging ayam)",
+      "requirements": [
+        "Perempuan",
+        "Umur 19–30 tahun",
+        "Tinggi badan minimal 155 cm, maksimal 170 cm",
+        "Minimal lulus SMK atau SMA sederajat",
+        "Sudah melakukan pra MCU",
+        "Tangan dominan kanan, tidak kidal",
+        "Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni",
+        "Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)",
+        "Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar",
+        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
+        "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
+        "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ],
+      "mensetsuNotes": "Mensetsu offline pertengahan Juli atau akhir Juli. Akan ada tes mencincang bawang bombay, kupas apel, dan tes kartu remi di hari H mensetsu."
+    },
+    {
+      "id": "test-job-xyz",
+      "company": {
+        "jp": "???????",
+        "romaji": "TEST K.K."
+      },
+      "industry": "Test Industry",
+      "industryJp": "???",
+      "location": "TEST, Jepang",
+      "vacancies": "3",
+      "candidates": 10,
+      "salary": {
+        "gross": 150000,
+        "grossHourly": 900,
+        "net": 120000
+      },
+      "interview": {
+        "date": "2026-09-01",
+        "type": "online"
+      },
+      "description": "Test job created via API",
+      "requirements": [
+        "Syarat 1",
+        "Syarat 2"
+      ],
+      "mensetsuNotes": "Test notes"
+    }
+  ]
+}

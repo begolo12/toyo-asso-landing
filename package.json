@@ -1,13 +1,14 @@
 {
-  "name": "toyo-asso-landing",
+  "name": "lpk-pjb-landing",
   "version": "1.0.0",
-  "description": "Landing page rekrutmen TOYO ASSO KABUSHIKI GAISHA",
+  "description": "Landing page rekrutmen LPK PJB / Putra Jabung Berkarya",
   "private": true,
   "scripts": {
     "dev": "vercel dev",
+    "dev:local": "node local-server.js",
     "deploy": "vercel --prod"
   },
   "dependencies": {
-    "@vercel/kv": "^3.0.0"
+    "@neondatabase/serverless": "^0.9.4"
   }
 }
