@@ -1,5 +1,5 @@
 import { bindDialog, closeDialog, openDialog } from "../shared/a11y.js";
-import { debounce, qs } from "../shared/dom.js";
+import { debounce, qs, qsa } from "../shared/dom.js";
 import { confirmDialog, toast } from "../shared/toast.js";
 import { renderJobCard } from "../shared/jobCard.js";
 import { applyTranslations, t } from "../shared/i18n.js";
@@ -31,6 +31,9 @@ export function createJobForm({ api, jobsTable }) {
   const acceptedField = qs(".quota-accepted-field");
   const acceptedInput = qs('input[name="accepted"]');
   const acceptedError = qs("#acceptedError");
+  // form.id is the form's id attribute (string), so we need a direct ref
+  // to the input with name="id" (named access would collide with the IDL attr).
+  const idInput = qs('input[name="id"]', form);
   const quotaSlotsText = qs("#quotaSlotsText");
   const quotaCandidatesText = qs("#quotaCandidatesText");
   const quotaAcceptedSummary = qs("#quotaAcceptedSummary");
@@ -73,7 +76,7 @@ export function createJobForm({ api, jobsTable }) {
     submitBtn.textContent = t("admin.form.save");
     title.textContent = t("admin.form.title.create");
     qs("#editId").value = "";
-    form.id.disabled = false;
+    idInput.disabled = false;
     // Defensive: re-enable any controls left disabled from a prior save
     // (the submit handler disables everything before await; if the modal
     // is reopened we must restore them so the form is editable).
@@ -90,7 +93,7 @@ export function createJobForm({ api, jobsTable }) {
   function openCreate(triggerEl) {
     resetForm();
     openDialog(modal, triggerEl);
-    setTimeout(() => form.id?.focus(), 80);
+    setTimeout(() => idInput?.focus(), 80);
   }
 
   async function requestClose() {
@@ -450,8 +453,8 @@ export function createJobForm({ api, jobsTable }) {
     isEdit = true;
     title.textContent = t("admin.form.title.edit");
     qs("#editId").value = jobId;
-    form.id.value = jobId;
-    form.id.disabled = true;
+    idInput.value = jobId;
+    idInput.disabled = true;
     form.companyRomaji.value = job.company.romaji || "";
     form.companyJp.value = job.company.jp || "";
     form.industry.value = job.industry || "";
