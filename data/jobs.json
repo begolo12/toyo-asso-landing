@@ -1,15 +1,60 @@
 {
   "brand": {
     "name": "LPK PJB",
-    "fullName": "LPK PJB / LPK - Putra Jabung Berkarya",
+    "fullName": "Putra Jabung Berkarya",
     "tagline": "Bekal Skill Kerja ke Jepang",
-    "logo": "/assets/logo.png"
+    "logo": "/assets/logo-lpk.png"
   },
   "jobs": [
+    {
+      "id": "sagakizai",
+      "gender": "male",
+      "slots": 3,
+      "available": 3,
+      "filled": 0,
+      "isHidden": false,
+      "company": {
+        "jp": "株式会社サガキザイ",
+        "romaji": "KABUSHIKI GAISHA SAGAKIZAI"
+      },
+      "industry": "Konstruksi Scaffolding (TOBI)",
+      "industryJp": "とび作業",
+      "location": "SAGA, Jepang",
+      "vacancies": 3,
+      "candidates": 9,
+      "salary": {
+        "gross": 178600,
+        "grossHourly": 1030,
+        "net": 135000
+      },
+      "interview": {
+        "date": "2026-08-26",
+        "type": "offline"
+      },
+      "mensetsuNotes": "Mensetsu offline antara tanggal 26 atau 27 Agustus 2026.",
+      "requirements": [
+        "Laki-laki",
+        "Umur 20–25 tahun, belum menikah",
+        "Tinggi badan minimal 168 cm",
+        "Sudah melakukan pra MCU (Medical Check Up)",
+        "Berpengalaman di bidang konstruksi",
+        "Minimal lulus SMK atau SMA sederajat",
+        "Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni",
+        "Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)",
+        "Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar",
+        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
+        "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
+        "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
+        "Tidak sedang mengikuti seleksi di tempat lain"
+      ]
+    },
     {
       "id": "toyo-asso",
       "gender": "male",
       "slots": 2,
+      "available": 2,
+      "filled": 0,
+      "isHidden": false,
       "company": {
         "jp": "東洋圧送株式会社",
         "romaji": "TOYO ASSO KABUSHIKI GAISHA"
@@ -30,7 +75,7 @@
       },
       "requirements": [
         "Laki-laki",
-        "Umur 20–28 tahun",
+        "Umur 19–28 tahun",
         "Tinggi badan minimal 160 cm",
         "Sudah melakukan pra MCU (Medical Check Up)",
         "Berpengalaman di bidang konstruksi",
@@ -45,144 +90,39 @@
       ]
     },
     {
-      "id": "hokuto-kaigo",
-      "gender": "all",
-      "slots": 4,
-      "company": {
-        "jp": "北斗介護サービス株式会社",
-        "romaji": "HOKUTO KAIGO SERVICE K.K."
-      },
-      "industry": "Perawatan Lansia (Caregiver)",
-      "industryJp": "介護スタッフ",
-      "location": "SAITAMA, Jepang",
-      "vacancies": 4,
-      "candidates": 12,
-      "salary": {
-        "gross": 185000,
-        "grossHourly": 1063,
-        "net": 135000
-      },
-      "interview": {
-        "date": "2026-08-05",
-        "type": "offline"
-      },
-      "requirements": [
-        "Pria atau wanita",
-        "Umur 20–30 tahun",
-        "Minimal lulus SMA / SMK sederajat",
-        "Telah belajar bahasa Jepang minimal 6 bulan / setara JLPT N4 (N3 lebih diutamakan)",
-        "Mempunyai sertifikat Kaigo (介護) menjadi nilai tambah",
-        "Pengalaman merawat lansia / di bidang kesehatan menjadi nilai tambah",
-        "Sehat jasmani dan rohani, tidak memiliki penyakit menular",
-        "Tidak berkacamata (lensa kontak diperbolehkan), tidak bertato, dan tidak bertindik",
-        "Bersabar, telaten, jujur, dan mempunyai jiwa melayani",
-        "Mau belajar budaya kerja Jepang dan sanggup tinggal di asrama perusahaan",
-        "Tidak sedang mengikuti seleksi di tempat lain"
-      ]
-    },
-    {
-      "id": "yamato-welding",
+      "id": "airtech",
       "gender": "male",
-      "slots": 3,
-      "company": {
-        "jp": "大和溶接工業株式会社",
-        "romaji": "YAMATO YOUSETSU KOGYOU K.K."
-      },
-      "industry": "Konstruksi Pengelasan (Welder)",
-      "industryJp": "溶接工",
-      "location": "AICHI, Jepang",
-      "vacancies": 3,
-      "candidates": 8,
-      "salary": {
-        "gross": 245000,
-        "grossHourly": 1410,
-        "net": 165000
-      },
-      "interview": {
-        "date": "2026-07-25",
-        "type": "offline"
-      },
-      "requirements": [
-        "Laki-laki",
-        "Umur 20–28 tahun",
-        "Tinggi badan minimal 160 cm, berat badan proporsional",
-        "Minimal lulus SMK Teknik (Las / Mesin / Elektro) atau sederajat",
-        "Berpengalaman kerja las minimal 1 tahun (TIG / MIG / Stick / CO2)",
-        "Mempunyai sertifikat JWS (Japanese Welding Society) atau sertifikat BNSP menjadi nilai tambah",
-        "Telah belajar bahasa Jepang minimal 3 bulan / setara Bab 25 ke atas, bisa percakapan dasar",
-        "Mata sehat, tidak buta warna (tes Ishihara wajib)",
-        "Sehat dan bugar, tidak ada riwayat sakit pinggang / asma / epilepsy",
-        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
-        "Rajin, jujur, disiplin, dan patuh terhadap K3 (Keselamatan dan Kesehatan Kerja)",
-        "Tidak sedang mengikuti seleksi di tempat lain"
-      ]
-    },
-    {
-      "id": "hokkai-food",
-      "gender": "all",
-      "slots": 5,
-      "company": {
-        "jp": "北海食品加工株式会社",
-        "romaji": "HOKKAI SHOKUHIN KAKOU K.K."
-      },
-      "industry": "Pengolahan & Pengemasan Makanan",
-      "industryJp": "食品加工・包装",
-      "location": "HOKKAIDO, Jepang",
-      "vacancies": 5,
-      "candidates": 15,
-      "salary": {
-        "gross": 175000,
-        "grossHourly": 1006,
-        "net": 125000
-      },
-      "interview": {
-        "date": "2026-08-10",
-        "type": "online"
-      },
-      "requirements": [
-        "Pria atau wanita",
-        "Umur 19–28 tahun",
-        "Minimal lulus SMA / SMK sederajat",
-        "Telah belajar bahasa Jepang minimal 3 bulan / setara Bab 20 ke atas",
-        "Bersedia kerja di suhu dingin (cold storage 2–10°C) dan shift (pagi / siang / malam)",
-        "Tidak memiliki alergi seafood, daging sapi, daging babi, telur, atau produk turunannya",
-        "Sehat jasmani dan rohani, tidak memiliki penyakit menular / kulit",
-        "Tidak bertato, tidak bertindik (perempuan tidak diharuskan melepas anting polos)",
-        "Rajin, jujur, teliti, dan bisa bekerja dalam tim",
-        "Pengalaman di pabrik pengolahan makanan / produksi menjadi nilai tambah",
-        "Tidak sedang mengikuti seleksi di tempat lain"
-      ]
-    },
-    {
-      "id": "torizen-shokuchoniku",
-      "gender": "female",
       "slots": 10,
+      "available": 10,
+      "filled": 0,
+      "isHidden": false,
       "company": {
-        "jp": "トリゼン食鳥肉協同組合",
-        "romaji": "TORIZEN SHOKUCHONIKU KYOUDOU KUMIAI"
+        "jp": "株式会社エアーテック",
+        "romaji": "KABUSHIKI GAISHA AIRTECH"
       },
-      "industry": "Pengolahan Makanan Daging Ayam",
-      "industryJp": "食鳥処理加工業",
-      "location": "SAGA, Jepang",
-      "vacancies": "8-10",
+      "industry": "Konstruksi Perakitan Besi (Reinforcement)",
+      "industryJp": "鉄筋施工",
+      "description": "Merakit besi untuk membuat pondasi bangunan dan pagar udara (エアフェンス取り付け)",
+      "location": "TOKYO & OSAKA, Jepang",
+      "vacancies": 10,
       "candidates": 30,
       "salary": {
-        "gross": 165000,
-        "grossHourly": 1030,
+        "gross": 193093,
+        "grossHourly": 1207,
         "net": 130000
       },
       "interview": {
-        "date": "2026-07-20",
-        "type": "offline"
+        "date": "2026-07-08",
+        "type": "online"
       },
-      "description": "Pengolahan Makanan Daging Ayam / 食鳥処理加工業・食鳥肉の解体加工などの作業員 (pekerja pemotongan & pengolahan daging ayam)",
+      "mensetsuNotes": "Mensetsu online. Penempatan di Tokyo atau Osaka (5 orang masing-masing). Gaji kotor 193.093–201.587 yen / bulan, gaji bersih bisa sekitar 130.000–160.000 yen tergantung penempatan dan lembur.",
       "requirements": [
-        "Perempuan",
-        "Umur 19–30 tahun",
-        "Tinggi badan minimal 155 cm, maksimal 170 cm",
+        "Laki-laki",
+        "Umur 20–30 tahun",
+        "Tinggi badan minimal 160 cm",
+        "Sudah melakukan pra MCU (Medical Check Up)",
+        "Berpengalaman di bidang konstruksi",
         "Minimal lulus SMK atau SMA sederajat",
-        "Sudah melakukan pra MCU",
-        "Tangan dominan kanan, tidak kidal",
         "Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni",
         "Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)",
         "Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar",
@@ -190,8 +130,49 @@
         "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
         "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
         "Tidak sedang mengikuti seleksi di tempat lain"
-      ],
-      "mensetsuNotes": "Mensetsu offline pertengahan Juli atau akhir Juli. Akan ada tes mencincang bawang bombay, kupas apel, dan tes kartu remi di hari H mensetsu."
+      ]
+    },
+    {
+      "id": "rojikomu",
+      "gender": "male",
+      "slots": 5,
+      "available": 5,
+      "filled": 0,
+      "isHidden": false,
+      "company": {
+        "jp": "株式会社ロジコム",
+        "romaji": "KABUSHIKI GAISHA ROJIKOMU"
+      },
+      "industry": "Perawatan Alat Berat (Maintenance Mesin Konstruksi)",
+      "industryJp": "建材資材の管理及びメンテナンス",
+      "description": "Kontrak kerja 1 tahun. Perawatan & manajemen alat berat / material konstruksi.",
+      "location": "SAGA, Jepang",
+      "vacancies": 5,
+      "candidates": 15,
+      "salary": {
+        "gross": 165000,
+        "grossHourly": 1057,
+        "net": 120000
+      },
+      "interview": {
+        "date": "2026-07-06",
+        "type": "offline"
+      },
+      "mensetsuNotes": "Mensetsu offline rencana 6 Juli 2026. Setelah lulus mensetsu WAJIB bikin SIM A.",
+      "requirements": [
+        "Laki-laki",
+        "Umur 18–25 tahun",
+        "Sudah melakukan pra MCU (Medical Check Up)",
+        "Minimal lulus SMK atau SMA sederajat",
+        "Telah selesai belajar bahasa Jepang minimal 3 bulan / lebih dari Bab 25, dibuktikan dengan skill percakapan yang mumpuni",
+        "Mata sehat, tidak minus, dan tidak buta warna (dibuktikan dengan tes buta warna dan tes mata dengan ketajaman minimal 1.0)",
+        "Sehat dan bugar secara fisik, bersemangat dalam bekerja dan belajar",
+        "Tidak berkacamata, tidak bertato, dan tidak bertindik",
+        "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
+        "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
+        "Tidak sedang mengikuti seleksi di tempat lain",
+        "Bersedia bikin SIM A setelah lulus mensetsu"
+      ]
     }
   ]
 }

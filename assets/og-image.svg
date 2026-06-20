@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">LPK PJB — Lowongan Kerja ke Jepang</title>
+  <desc id="desc">Open Graph image for LPK Putra Jabung Berkarya</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ecfdf5"/>
+      <stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="28" flood-color="#064e3b" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="80" r="210" fill="#34d399" opacity="0.35"/>
+  <circle cx="120" cy="560" r="260" fill="#ffffff" opacity="0.35"/>
+  <rect x="110" y="105" width="980" height="420" rx="44" fill="#ffffff" opacity="0.94" filter="url(#shadow)"/>
+  <text x="160" y="210" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#047857">LPK Putra Jabung Berkarya</text>
+  <text x="160" y="300" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" fill="#064e3b">Lowongan Kerja ke Jepang</text>
+  <text x="160" y="365" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="600" fill="#059669">Bekal Skill Kerja ke Jepang — Resmi &amp; Terpercaya</text>
+  <rect x="160" y="420" width="330" height="64" rx="32" fill="#10b981"/>
+  <text x="205" y="463" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#ffffff">LIHAT LOWONGAN</text>
+</svg>

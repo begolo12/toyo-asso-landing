@@ -251,6 +251,59 @@ export default async function handler(req, res) {
                 return res.status(200).json({ success: true, jobId, isHidden: !!isHidden });
             }
 
+            // ---- deleteJob: hapus lowongan permanen dari DB ----
+            // Catatan: untuk lowongan seed (data/jobs.json), hanya menyembunyikan
+            // lewat job_visibility karena file JSON adalah read-only seed.
+            if (action === "deleteJob") {
+                const { jobId } = body;
+                if (!jobId) {
+                    return res.status(400).json({ error: "jobId wajib diisi" });
+                }
+
+                // Cek apakah job ini ada di JSON seed
+                let isSeed = false;
+                try {
+                    const jobsData = JSON.parse(await fs.readFile(JOBS_FILE, "utf-8"));
+                    isSeed = (jobsData.jobs || []).some((j) => j.id === jobId);
+                } catch {
+                    // ignore
+                }
+
+                if (isSeed) {
+                    // Seed job → sembunyikan via visibility, supaya tidak muncul di web
+                    await sql`
+                        INSERT INTO job_visibility (job_id, is_hidden, updated_at)
+                        VALUES (${jobId}, TRUE, NOW())
+                        ON CONFLICT (job_id)
+                        DO UPDATE SET is_hidden = TRUE, updated_at = NOW()
+                    `;
+                    await sql`
+                        INSERT INTO job_visibility_log (job_id, action)
+                        VALUES (${jobId}, 'hide')
+                    `;
+                    return res.status(200).json({
+                        success: true,
+                        jobId,
+                        action: "hidden",
+                        note: "Lowongan seed (JSON) disembunyikan dari web. Untuk hapus permanen, edit data/jobs.json.",
+                    });
+                }
+
+                // Dynamic job → hapus dari semua tabel terkait
+                const delJob = await sql`DELETE FROM jobs WHERE id = ${jobId}`;
+                await sql`DELETE FROM job_status WHERE job_id = ${jobId}`;
+                await sql`DELETE FROM job_visibility WHERE job_id = ${jobId}`;
+                // Hapus pendaftar terkait supaya tidak ada data yatim
+                const delReg = await sql`DELETE FROM registrations WHERE job_id = ${jobId}`;
+                return res.status(200).json({
+                    success: true,
+                    jobId,
+                    action: "deleted",
+                    deletedJob: delJob.count || 0,
+                    deletedRegistrations: delReg.count || 0,
+                });
+            }
+
             // ---- editJob: update lowongan yang sudah ada ----
             if (action === "editJob") {
                 const job = body.job;
@@ -316,7 +369,7 @@ export default async function handler(req, res) {
             }
 
             return res.status(400).json({
-                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', 'editJob', atau 'toggleVisibility'.",
+                error: "action tidak dikenal. Gunakan 'toggle', 'setStatus', 'createJob', 'editJob', 'deleteJob', atau 'toggleVisibility'.",
             });
         } catch (err) {
             console.error("Admin action error:", err);

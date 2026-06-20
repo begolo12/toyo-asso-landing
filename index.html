@@ -3,104 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LPK PJB - Lowongan Kerja ke Jepang</title>
-    <meta name="description" content="LPK PJB / LPK - Putra Jabung Berkarya — Bekal Skill Kerja ke Jepang. Daftar lowongan kerja resmi ke Jepang.">
+    <meta name="theme-color" content="#10b981">
+    <meta name="color-scheme" content="light dark">
+
+    <title>LPK PJB — Lowongan Kerja ke Jepang Resmi &amp; Terpercaya</title>
+    <meta name="description" content="LPK Putra Jabung Berkarya (LPK PJB) — Daftar lowongan kerja resmi ke Jepang. Pelatihan bahasa, mitra terpercaya, dan penempatan kerja sesuai skill. Buka lowongan terbaru sekarang.">
+    <meta name="keywords" content="lowongan kerja jepang, lpk pjb, kerja ke jepang, lpk putra jabung berkarya, caregiver jepang, welder jepang, processing makanan jepang">
+
+    <link rel="canonical" href="https://toyo-asso-landing.vercel.app/">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="LPK PJB — Putra Jabung Berkarya">
+    <meta property="og:title" content="LPK PJB — Lowongan Kerja ke Jepang Resmi &amp; Terpercaya">
+    <meta property="og:description" content="Bekal Skill Kerja ke Jepang. Pilih lowongan yang sesuai keahlian Anda — konstruksi, caregiver, processing makanan, dan lain-lain.">
+    <meta property="og:url" content="https://toyo-asso-landing.vercel.app/">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:image" content="https://toyo-asso-landing.vercel.app/assets/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LPK PJB — Lowongan Kerja ke Jepang">
+    <meta name="twitter:description" content="Daftar lowongan kerja resmi ke Jepang. Mitra terpercaya, pelatihan bahasa, dan penempatan kerja.">
+    <meta name="twitter:image" content="https://toyo-asso-landing.vercel.app/assets/og-image.svg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
+    <link rel="stylesheet" href="/src/shared/tokens.css">
+    <link rel="stylesheet" href="/src/shared/base.css">
+    <link rel="stylesheet" href="/src/styles/site.css">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "LPK Putra Jabung Berkarya",
+        "alternateName": "LPK PJB",
+        "url": "https://toyo-asso-landing.vercel.app/",
+        "logo": "https://toyo-asso-landing.vercel.app/assets/logo-lpk.png",
+        "description": "Lembaga Pelatihan Kerja resmi yang mengirim tenaga kerja ke Jepang.",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "ID"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+62-812-3456-7890",
+            "contactType": "customer service",
+            "areaServed": "ID",
+            "availableLanguage": ["id", "ja"]
+        }
+    }
+    </script>
 </head>
 <body>
-    <!-- Header / Brand Bar -->
+    <a class="skip-link" href="#main" data-i18n="a11y.skip">Lewati ke konten utama</a>
+
     <header class="brand-header">
         <div class="container brand-bar">
-            <a href="/" class="brand-link">
-                <img class="brand-logo" src="/assets/logo-lpk.png" alt="LPK Putra Jabung Berkarya">
+            <a href="/" class="brand-link" data-i18n-aria="brand.aria" aria-label="LPK PJB — Beranda">
+                <img class="brand-logo" src="/assets/logo-lpk.png" alt="LPK Putra Jabung Berkarya" width="120" height="44" decoding="async">
                 <div class="brand-text">
                     <div class="brand-name">LPK Putra Jabung Berkarya</div>
-                    <div class="brand-subname">Lembaga Pelatihan Kerja</div>
+                    <div class="brand-subname" data-i18n="brand.tagline">Bekal Skill Kerja ke Jepang</div>
                 </div>
             </a>
-            <a href="/admin/" class="admin-link-header">Admin</a>
+            <div class="header-actions">
+                <div class="lang-toggle" id="langToggle" role="group" data-i18n-aria="lang.toggle.aria" aria-label="Ganti bahasa">
+                    <button type="button" data-lang="id" aria-pressed="true">ID</button>
+                    <span class="lang-toggle-divider" aria-hidden="true">/</span>
+                    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+                <a href="/admin/" class="admin-link-header" rel="nofollow" data-i18n-aria="footer.admin.aria" aria-label="Masuk ke panel admin">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>Admin</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">Lowongan Kerja ke Jepang</h1>
-            <p class="hero-subtitle">Bekal Skill Kerja ke Jepang — Resmi & Terpercaya</p>
-            <p class="hero-description">Pilih lowongan yang sesuai dengan keahlian dan minat Anda. Proses seleksi terbuka dan transparan.</p>
-            <a href="#lowongan" class="cta-button">LIHAT LOWONGAN</a>
-        </div>
-    </section>
-
-    <!-- Job Listings -->
-    <section class="section jobs-section" id="lowongan">
-        <div class="container">
-            <h2 class="section-title">Lowongan Tersedia</h2>
-            <p class="section-subtitle" id="jobsCount">Memuat lowongan...</p>
-
-            <div class="filter-bar" id="filterBar">
-                <button class="filter-btn active" data-filter="all" type="button">
-                    <span class="filter-icon">🌐</span> Semua
-                </button>
-                <button class="filter-btn" data-filter="male" type="button">
-                    <span class="filter-icon">👨</span> Pria
-                </button>
-                <button class="filter-btn" data-filter="female" type="button">
-                    <span class="filter-icon">👩</span> Wanita
-                </button>
-            </div>
-
-            <div id="jobsContainer" class="jobs-grid">
-                <!-- Jobs akan di-render di sini oleh script.js -->
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p>Memuat lowongan...</p>
+    <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="container">
+                <span class="hero-eyebrow" data-i18n="hero.eyebrow">Resmi &amp; Terpercaya</span>
+                <h1 class="hero-title" id="hero-title" data-i18n="hero.title">Lowongan Kerja ke <span class="hero-title-accent">Jepang</span></h1>
+                <p class="hero-subtitle" data-i18n="hero.subtitle">Bekal Skill Kerja ke Jepang</p>
+                <p class="hero-description" data-i18n="hero.description">Pilih lowongan yang sesuai dengan keahlian Anda. Proses seleksi terbuka dan transparan — tanpa biaya pendaftaran.</p>
+                <a href="#lowongan" class="cta-button">
+                    <span data-i18n="hero.cta">LIHAT LOWONGAN</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M5 12h14M13 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <div class="hero-stats" data-i18n-aria="hero.stats.aria" aria-label="Statistik singkat">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" id="heroStatJobs">—</div>
+                        <div class="hero-stat-label" data-i18n="hero.stat.jobs">LOWONGAN AKTIF</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">100%</div>
+                        <div class="hero-stat-label" data-i18n="hero.stat.free">GRATIS PENDAFTARAN</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value" data-i18n="hero.stat.response.value">1-3 Hari</div>
+                        <div class="hero-stat-label" data-i18n="hero.stat.response">RESPON TIM LPK</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Info / Trust Section -->
-    <section class="section trust-section">
-        <div class="container">
-            <h2 class="section-title">Mengapa LPK PJB?</h2>
-            <div class="trust-grid">
-                <div class="trust-card">
-                    <div class="trust-icon">✓</div>
-                    <h3>Resmi & Legal</h3>
-                    <p>Lembaga pelatihan kerja terdaftar resmi dengan pengalaman mengirim TKI ke Jepang.</p>
+        <section class="section jobs-section" id="lowongan" aria-labelledby="jobs-title">
+            <div class="container">
+                <h2 class="section-title" id="jobs-title" data-i18n="section.jobs.title">Lowongan Tersedia</h2>
+                <p class="section-subtitle" id="jobsCount">Memuat lowongan...</p>
+
+                <div class="filter-bar-wrap">
+                    <div class="filter-bar" id="filterBar" role="group" data-i18n-aria="section.jobs.filter.aria" aria-label="Filter lowongan berdasarkan gender">
+                        <button class="filter-btn active" data-filter="all" type="button" aria-pressed="true" data-i18n="section.jobs.filter.all">Semua</button>
+                        <button class="filter-btn" data-filter="male" type="button" aria-pressed="false" data-i18n="section.jobs.filter.male">Pria</button>
+                        <button class="filter-btn" data-filter="female" type="button" aria-pressed="false" data-i18n="section.jobs.filter.female">Wanita</button>
+                    </div>
                 </div>
-                <div class="trust-card">
-                    <div class="trust-icon">🤝</div>
-                    <h3>Mitra Terpercaya</h3>
-                    <p>Bekerja sama dengan perusahaan Jepang yang sudah terverifikasi.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-icon">📚</div>
-                    <h3>Pelatihan Bahasa</h3>
-                    <p>Pembelajaran bahasa Jepang intensif sebelum keberangkatan.</p>
-                </div>
-                <div class="trust-card">
-                    <div class="trust-icon">💼</div>
-                    <h3>Penempatan Kerja</h3>
-                    <p>Penempatan sesuai skill dan bidang keahlian masing-masing kandidat.</p>
+
+                <div id="jobsContainer" class="jobs-grid" aria-live="polite" aria-busy="true">
+                    <div class="loading-state" role="status">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <p data-i18n="loading.jobs">Memuat lowongan...</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Registration Modal -->
-    <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog">
-        <div class="modal-overlay" data-close-modal></div>
+        <section class="section trust-section" aria-labelledby="trust-title">
+            <div class="container">
+                <h2 class="section-title" id="trust-title" data-i18n="why.title">Mengapa LPK PJB?</h2>
+                <div class="trust-grid">
+                    <article class="trust-card">
+                        <div class="trust-icon" aria-hidden="true">✓</div>
+                        <h3 data-i18n="why.legal.title">Resmi &amp; Legal</h3>
+                        <p data-i18n="why.legal.body">Lembaga pelatihan kerja terdaftar resmi dengan pengalaman mengirim TKI ke Jepang.</p>
+                    </article>
+                    <article class="trust-card">
+                        <div class="trust-icon" aria-hidden="true">🤝</div>
+                        <h3 data-i18n="why.partners.title">Mitra Terpercaya</h3>
+                        <p data-i18n="why.partners.body">Bekerja sama dengan perusahaan Jepang yang sudah terverifikasi.</p>
+                    </article>
+                    <article class="trust-card">
+                        <div class="trust-icon" aria-hidden="true">📚</div>
+                        <h3 data-i18n="why.language.title">Pelatihan Bahasa</h3>
+                        <p data-i18n="why.language.body">Pembelajaran bahasa Jepang intensif sebelum keberangkatan.</p>
+                    </article>
+                    <article class="trust-card">
+                        <div class="trust-icon" aria-hidden="true">💼</div>
+                        <h3 data-i18n="why.placement.title">Penempatan Kerja</h3>
+                        <p data-i18n="why.placement.body">Penempatan sesuai skill dan bidang keahlian masing-masing kandidat.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="registerModal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="registerTitle" aria-modal="true">
+        <div class="modal-overlay" data-close-dialog></div>
         <div class="modal-content">
-            <button class="modal-close" data-close-modal aria-label="Tutup">&times;</button>
-
+            <button class="modal-close" data-close-dialog type="button" data-i18n-aria="modal.detail.close" aria-label="Tutup">&times;</button>
             <div class="modal-header">
-                <h2>Form Pendaftaran</h2>
+                <h2 id="registerTitle" data-i18n="modal.register.title">Form Pendaftaran</h2>
                 <p class="modal-subtitle" id="modalJobTitle">—</p>
             </div>
 
@@ -108,62 +182,67 @@
                 <input type="hidden" id="jobId" name="jobId" required>
 
                 <div class="form-group">
-                    <label for="regName">Nama Lengkap <span class="required">*</span></label>
-                    <input type="text" id="regName" name="name" placeholder="Nama lengkap Anda" required maxlength="100">
+                    <label for="regName" data-i18n="modal.register.name">Nama Lengkap <span class="required" aria-hidden="true">*</span></label>
+                    <input type="text" id="regName" name="name" data-i18n-placeholder="modal.register.name.placeholder" placeholder="Nama lengkap Anda" required minlength="2" maxlength="100" autocomplete="name" aria-required="true">
                 </div>
 
                 <div class="form-group">
-                    <label for="regPhone">Nomor Handphone <span class="required">*</span></label>
-                    <input type="tel" id="regPhone" name="phone" placeholder="08xxxxxxxxxx" required pattern="[0-9+\-\s]{8,20}">
+                    <label for="regPhone" data-i18n="modal.register.phone">Nomor Handphone <span class="required" aria-hidden="true">*</span></label>
+                    <input type="tel" id="regPhone" name="phone" placeholder="08xxxxxxxxxx" required inputmode="tel" maxlength="20" autocomplete="tel" aria-required="true" aria-describedby="regPhoneHint">
+                    <small id="regPhoneHint" class="form-note" style="text-align:left;" data-i18n="modal.register.phone.help">Format: angka, +, -, atau spasi. Minimal 8 digit.</small>
                 </div>
 
-                <div id="formError" class="form-error hidden"></div>
+                <div id="formError" class="form-error hidden" role="alert"></div>
 
-                <button type="submit" id="submitBtn" class="btn-submit">KIRIM PENDAFTARAN</button>
+                <button type="submit" id="submitBtn" class="btn-submit"><span data-i18n="modal.register.submit">KIRIM PENDAFTARAN</span></button>
 
-                <p class="form-note">Pendaftaran gratis. Tim kami akan menghubungi Anda untuk tahap selanjutnya.</p>
+                <p class="form-note" data-i18n="modal.register.success">Pendaftaran gratis. Tim kami akan menghubungi Anda untuk tahap selanjutnya.</p>
             </form>
 
             <div id="successState" class="success-state hidden">
-                <div class="success-icon">✓</div>
-                <h3>Pendaftaran Berhasil!</h3>
-                <p>Terima kasih telah mendaftar. Tim LPK PJB akan menghubungi Anda dalam 1-3 hari kerja melalui WhatsApp.</p>
-                <button class="btn-secondary" data-close-modal>Tutup</button>
+                <div class="success-icon" aria-hidden="true">✓</div>
+                <h3 data-i18n="modal.register.success.title">Pendaftaran Berhasil!</h3>
+                <p data-i18n="modal.register.success.body">Terima kasih telah mendaftar. Tim LPK PJB akan menghubungi Anda dalam 1-3 hari kerja melalui WhatsApp.</p>
+                <button class="btn-secondary" data-close-dialog type="button" data-i18n="modal.detail.close">Tutup</button>
             </div>
         </div>
     </div>
 
-    <!-- Job Detail Modal -->
-    <div id="detailModal" class="modal hidden" aria-hidden="true" role="dialog">
-        <div class="modal-overlay" data-close-detail></div>
+    <div id="detailModal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="detailTitle" aria-modal="true">
+        <div class="modal-overlay" data-close-dialog></div>
         <div class="modal-content modal-content-wide">
-            <button class="modal-close" data-close-detail aria-label="Tutup">&times;</button>
-
+            <button class="modal-close" data-close-dialog type="button" data-i18n-aria="modal.detail.close" aria-label="Tutup">&times;</button>
             <div class="modal-header">
-                <h2 id="detailCompanyJp" class="jp">—</h2>
+                <h2 id="detailTitle" class="jp">—</h2>
                 <p class="modal-subtitle" id="detailCompanyRomaji">—</p>
             </div>
 
             <div class="detail-body" id="detailBody">
-                <!-- Populated by script.js -->
+                <p class="empty-state" role="status">Memuat detail lowongan…</p>
             </div>
 
             <div class="detail-footer">
-                <button class="btn-secondary" data-close-detail>Tutup</button>
-                <button class="btn-primary" id="detailDaftarBtn">DAFTAR SEKARANG</button>
+                <button class="btn-secondary" data-close-dialog type="button" data-i18n="modal.detail.close">Tutup</button>
+                <button class="btn-primary" id="detailDaftarBtn" type="button" data-i18n="modal.detail.register">DAFTAR SEKARANG</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p class="footer-brand"><strong>LPK PJB</strong> — LPK - Putra Jabung Berkarya</p>
-            <p class="footer-tagline">Bekal Skill Kerja ke Jepang</p>
-            <p class="footer-copy">© 2026 LPK PJB. All rights reserved. · <a href="/admin/" class="admin-link">Admin Panel</a></p>
+            <p class="footer-brand"><strong data-i18n="footer.brand">LPK PJB</strong> — <span data-i18n="footer.fullname">LPK - Putra Jabung Berkarya</span></p>
+            <p class="footer-tagline" data-i18n="brand.tagline">Bekal Skill Kerja ke Jepang</p>
+            <p class="footer-copy" data-i18n="footer.copy" data-i18n-params='{"year":""}'>© <span id="footerYear">2026</span> LPK PJB. Hak cipta dilindungi. · <a href="/admin/" rel="nofollow" data-i18n="footer.admin">Panel Admin</a></p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <noscript>
+        <div class="container" style="padding: 24px 16px; text-align: center;">
+            <h2>JavaScript dibutuhkan</h2>
+            <p>Aktifkan JavaScript untuk melihat daftar lowongan terbaru. Untuk bantuan langsung, hubungi WhatsApp admin LPK PJB.</p>
+        </div>
+    </noscript>
+
+    <script type="module" src="/src/site/main.js"></script>
 </body>
 </html>
