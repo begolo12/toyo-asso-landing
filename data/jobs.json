@@ -9,10 +9,7 @@
     {
       "id": "sagakizai",
       "gender": "male",
-      "slots": 3,
-      "available": 3,
-      "filled": 0,
-      "isHidden": false,
+      "slots": 9,
       "company": {
         "jp": "株式会社サガキザイ",
         "romaji": "KABUSHIKI GAISHA SAGAKIZAI"
@@ -20,7 +17,7 @@
       "industry": "Konstruksi Scaffolding (TOBI)",
       "industryJp": "とび作業",
       "location": "SAGA, Jepang",
-      "vacancies": 3,
+      "vacancies": 9,
       "candidates": 9,
       "salary": {
         "gross": 178600,
@@ -31,7 +28,7 @@
         "date": "2026-08-26",
         "type": "offline"
       },
-      "mensetsuNotes": "Mensetsu offline antara tanggal 26 atau 27 Agustus 2026.",
+      "description": "",
       "requirements": [
         "Laki-laki",
         "Umur 20–25 tahun, belum menikah",
@@ -46,15 +43,13 @@
         "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
         "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
         "Tidak sedang mengikuti seleksi di tempat lain"
-      ]
+      ],
+      "mensetsuNotes": "Mensetsu offline antara tanggal 26 atau 27 Agustus 2026."
     },
     {
       "id": "toyo-asso",
       "gender": "male",
-      "slots": 2,
-      "available": 2,
-      "filled": 0,
-      "isHidden": false,
+      "slots": 6,
       "company": {
         "jp": "東洋圧送株式会社",
         "romaji": "TOYO ASSO KABUSHIKI GAISHA"
@@ -62,7 +57,7 @@
       "industry": "Konstruksi Penuangan Beton Coran",
       "industryJp": "コンクリート圧送",
       "location": "CHIBA, Jepang",
-      "vacancies": 2,
+      "vacancies": 6,
       "candidates": 6,
       "salary": {
         "gross": 212763,
@@ -73,6 +68,7 @@
         "date": "2026-07-12",
         "type": "offline"
       },
+      "description": "",
       "requirements": [
         "Laki-laki",
         "Umur 19–28 tahun",
@@ -87,7 +83,8 @@
         "Tidak memiliki penyakit sakit pinggang ringan atau kronis, dan tidak punya alergi",
         "Rajin, jujur, ceria, dan patuh; semangat belajar bahasa Jepang; bisa membagi antara urusan pribadi dan pekerjaan",
         "Tidak sedang mengikuti seleksi di tempat lain"
-      ]
+      ],
+      "mensetsuNotes": ""
     },
     {
       "id": "airtech",

@@ -133,47 +133,150 @@
 }
 
 /* ============================================
-   Dark mode (prefers-color-scheme: dark)
-   All text colors verified ≥4.5:1 on bg.
+   Dark mode
+   Triggered by either:
+     - OS preference (prefers-color-scheme: dark)
+     - data-theme="dark" on <html> (user toggle)
+   Surface hierarchy (darkest → lightest):
+     bg < surface < surface-alt
+   Text (all pass WCAG AA on --color-surface):
+     text 16:1 · text-secondary 13:1 · text-muted 7:1
+     text-subtle 4.7:1 · text-faint 3.5:1 (large only)
    ============================================ */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --color-bg: #0b1410;
-        --color-bg-soft: #0f1c17;
-        --color-bg-mint: #102822;
-        --color-surface: #14241d;
-        --color-surface-alt: #0f1c17;
-        --color-surface-sunken: #08130e;
+:root[data-theme="dark"] {
+    /* ===== Surface hierarchy ===== */
+    --color-bg: #0b1410;                /* page — darkest */
+    --color-bg-soft: #131e19;           /* alt rows / striped areas */
+    --color-bg-mint: #0f2018;           /* decorative green tint */
+    --color-surface: #1a2722;            /* cards / panels — one step up */
+    --color-surface-alt: #243530;        /* chips / tags — two steps up */
+    --color-surface-sunken: #131e19;     /* inputs (recessed look) */
 
-        --color-text: #ecfdf5;              /* emerald-50 — 16:1 */
-        --color-text-secondary: #d1fae5;    /* emerald-100 — 13:1 */
-        --color-text-muted: #94a3b8;        /* slate-400 — 7.2:1 */
-        --color-text-subtle: #64748b;       /* slate-500 — 4.5:1 */
-        --color-text-faint: #475569;        /* slate-600 — large only */
+    /* ===== Text ===== */
+    --color-text: #f0fdf4;              /* emerald-50 — ~16:1 on surface */
+    --color-text-secondary: #d1fae5;    /* emerald-100 — ~13:1 */
+    --color-text-muted: #a7b8c4;        /* slate-300ish — ~7:1 */
+    --color-text-subtle: #94a3b8;       /* slate-400 — ~4.7:1 */
+    --color-text-faint: #64748b;        /* slate-500 — ~3.4:1 (large only) */
+    --color-text-inverse: #0b1410;
+
+    /* ===== Brand (primary — emerald) ===== */
+    --color-primary: #10b981;            /* emerald-500 — buttons/links */
+    --color-primary-dark: #059669;       /* hover (white on this = 4.7:1) */
+    --color-primary-darker: #047857;     /* pressed */
+    --color-primary-deep: #34d399;       /* for highlighted text on dark */
+    --color-primary-light: #34d399;      /* accent text */
+    --color-primary-soft: rgba(16, 185, 129, 0.16);  /* tinted bg */
+    --color-accent: #34d399;
+
+    /* ===== Admin brand (slate/navy → blue-300 for dark) ===== */
+    --color-admin: #93c5fd;
+    --color-admin-dark: #bfdbfe;
+    --color-admin-accent: #fbbf24;
+    --color-border: var(--border);
+
+    /* ===== Semantic — transparent tints so text stays readable ===== */
+    --color-success: #34d399;
+    --color-success-bg: rgba(52, 211, 153, 0.16);
+    --color-success-border: rgba(52, 211, 153, 0.32);
+    --color-success-text: #6ee7b7;       /* text on tinted bg — ~5:1 */
+
+    --color-warning: #fbbf24;
+    --color-warning-bg: rgba(251, 191, 36, 0.16);
+    --color-warning-border: rgba(251, 191, 36, 0.32);
+    --color-warning-text: #fde68a;
+
+    --color-danger: #f87171;
+    --color-danger-bg: rgba(248, 113, 113, 0.16);
+    --color-danger-border: rgba(248, 113, 113, 0.32);
+    --color-danger-text: #fca5a5;
+
+    --color-info: #60a5fa;
+    --color-info-bg: rgba(96, 165, 250, 0.16);
+    --color-info-border: rgba(96, 165, 250, 0.32);
+    --color-info-text: #93c5fd;
+
+    /* ===== Borders — stronger for visibility ===== */
+    --border: 1px solid rgba(255, 255, 255, 0.12);
+    --border-strong: 1px solid rgba(255, 255, 255, 0.22);
+    --border-mint: 1px solid rgba(52, 211, 153, 0.3);
+    --border-primary: 1px solid #10b981;
+    --border-muted: 1px solid rgba(255, 255, 255, 0.06);
+    --border-inverse: 1px solid rgba(255, 255, 255, 0.18);
+
+    /* ===== Shadows — slightly stronger for depth in dark ===== */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.4);
+    --shadow-focus: 0 0 0 3px rgba(16, 185, 129, 0.4);
+    --shadow-focus-admin: 0 0 0 3px rgba(147, 197, 253, 0.4);
+}
+
+/* When OS is dark AND user has not picked light, apply dark tokens too */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --color-bg: #0b1410;
+        --color-bg-soft: #131e19;
+        --color-bg-mint: #0f2018;
+        --color-surface: #1a2722;
+        --color-surface-alt: #243530;
+        --color-surface-sunken: #131e19;
+
+        --color-text: #f0fdf4;
+        --color-text-secondary: #d1fae5;
+        --color-text-muted: #a7b8c4;
+        --color-text-subtle: #94a3b8;
+        --color-text-faint: #64748b;
         --color-text-inverse: #0b1410;
 
-        --color-primary-darker: #34d399;    /* emerald-400 on dark */
+        --color-primary: #10b981;
+        --color-primary-dark: #059669;
+        --color-primary-darker: #047857;
+        --color-primary-deep: #34d399;
+        --color-primary-light: #34d399;
+        --color-primary-soft: rgba(16, 185, 129, 0.16);
+        --color-accent: #34d399;
 
-        /* ===== Admin brand (dark mode — flipped for contrast) ===== */
-        --color-admin: #93c5fd;              /* blue-300 — ~8.5:1 on #14241d */
-        --color-admin-dark: #bfdbfe;         /* blue-100 — hover on dark */
-        --color-admin-accent: #fbbf24;       /* amber-400 — accent on dark */
-        --color-border: var(--border);       /* alias for compatibility */
+        --color-admin: #93c5fd;
+        --color-admin-dark: #bfdbfe;
+        --color-admin-accent: #fbbf24;
+        --color-border: var(--border);
 
-        --color-success-text: #d1fae5;
-        --color-info-text: #bfdbfe;
+        --color-success: #34d399;
+        --color-success-bg: rgba(52, 211, 153, 0.16);
+        --color-success-border: rgba(52, 211, 153, 0.32);
+        --color-success-text: #6ee7b7;
+
+        --color-warning: #fbbf24;
+        --color-warning-bg: rgba(251, 191, 36, 0.16);
+        --color-warning-border: rgba(251, 191, 36, 0.32);
         --color-warning-text: #fde68a;
-        --color-danger-text: #fecaca;
 
-        --border: 1px solid rgba(255, 255, 255, 0.08);
-        --border-strong: 1px solid rgba(255, 255, 255, 0.14);
-        --border-mint: 1px solid rgba(52, 211, 153, 0.2);
-        --border-muted: 1px solid rgba(255, 255, 255, 0.04);
+        --color-danger: #f87171;
+        --color-danger-bg: rgba(248, 113, 113, 0.16);
+        --color-danger-border: rgba(248, 113, 113, 0.32);
+        --color-danger-text: #fca5a5;
 
-        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
-        --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.3);
-        --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.7), 0 8px 16px rgba(0, 0, 0, 0.4);
+        --color-info: #60a5fa;
+        --color-info-bg: rgba(96, 165, 250, 0.16);
+        --color-info-border: rgba(96, 165, 250, 0.32);
+        --color-info-text: #93c5fd;
+
+        --border: 1px solid rgba(255, 255, 255, 0.12);
+        --border-strong: 1px solid rgba(255, 255, 255, 0.22);
+        --border-mint: 1px solid rgba(52, 211, 153, 0.3);
+        --border-primary: 1px solid #10b981;
+        --border-muted: 1px solid rgba(255, 255, 255, 0.06);
+        --border-inverse: 1px solid rgba(255, 255, 255, 0.18);
+
+        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        --shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.6), 0 8px 16px rgba(0, 0, 0, 0.4);
+        --shadow-focus: 0 0 0 3px rgba(16, 185, 129, 0.4);
+        --shadow-focus-admin: 0 0 0 3px rgba(147, 197, 253, 0.4);
     }
 }

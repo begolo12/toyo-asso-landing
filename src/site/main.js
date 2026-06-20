@@ -3,6 +3,7 @@ import { normalizeJobs } from "../shared/jobs.js";
 import { renderErrorState, renderJobsList, renderLoadingState } from "./jobs-view.js";
 import { createSiteModals } from "./modals.js";
 import { applyTranslations, getLang, initI18n, setLang, t, subscribe as subscribeLang } from "../shared/i18n.js";
+import { cycleTheme, getTheme, initTheme, subscribeTheme } from "../shared/theme.js";
 
 const JOBS_API = "/api/jobs";
 const REGISTER_API = "/api/register";
@@ -109,6 +110,31 @@ function initLangToggle() {
   });
 }
 
+/**
+ * Theme toggle: cycles light → dark → system → light.
+ * Updates the icon, title, and data-theme-state on the button.
+ */
+function initThemeToggle() {
+  const btn = qs("#themeToggle");
+  if (!btn) return;
+  const updateBtn = (theme) => {
+    btn.dataset.themeState = theme;
+    const labelKey = theme === "light" ? "theme.label.light" : theme === "dark" ? "theme.label.dark" : "theme.label.system";
+    const label = t(labelKey);
+    // data-i18n-aria handles aria-label automatically via applyTranslations.
+    // We just need to refresh the title (which has dynamic state).
+    btn.setAttribute("title", t("theme.toggle.title", { state: label }));
+    btn.querySelectorAll(".theme-toggle-icon").forEach((el) => {
+      el.classList.toggle("is-hidden", el.dataset.themeIcon !== theme);
+    });
+  };
+  updateBtn(getTheme());
+  btn.addEventListener("click", () => {
+    cycleTheme();
+  });
+  subscribeTheme((theme) => updateBtn(theme));
+}
+
 function onLangChange() {
   // Reflect new state in toggle buttons
   const current = getLang();
@@ -117,6 +143,13 @@ function onLangChange() {
   });
   // Re-translate static markup
   applyTranslations(document);
+  // Refresh theme toggle title (state-dependent string)
+  const themeBtn = qs("#themeToggle");
+  if (themeBtn) {
+    const state = themeBtn.dataset.themeState || "system";
+    const labelKey = state === "light" ? "theme.label.light" : state === "dark" ? "theme.label.dark" : "theme.label.system";
+    themeBtn.setAttribute("title", t("theme.toggle.title", { state: t(labelKey) }));
+  }
   // Re-render dynamic content
   if (jobs.length > 0 || qs("#jobsContainer .empty-state, #jobsContainer .job-card")) {
     render();
@@ -133,8 +166,10 @@ function onLangChange() {
 }
 
 function init() {
+  initTheme();
   initI18n(document);
   initLangToggle();
+  initThemeToggle();
   subscribeLang(onLangChange);
 
   modals = createSiteModals({

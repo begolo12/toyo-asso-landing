@@ -14,6 +14,13 @@ export function genderIcon(gender) {
   return "👥";
 }
 
+export function normalizeAccepted(value) {
+  if (value == null || value === "") return null;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return Math.floor(n);
+}
+
 export function normalizeJob(job = {}) {
   const slots = Number(job.slots ?? job.vacancies ?? 0) || 0;
   const availableRaw = job.available != null ? Number(job.available) : null;
@@ -27,6 +34,13 @@ export function normalizeJob(job = {}) {
     ? Math.max(0, availableRaw)
     : Math.max(0, slots - filled);
 
+  // accepted: manual target "akan menerima X orang". Optional.
+  // Clamp to <= slots to defend against bad/legacy data.
+  const acceptedRaw = normalizeAccepted(job.accepted);
+  const accepted = acceptedRaw != null
+    ? Math.min(acceptedRaw, slots)
+    : null;
+
   return {
     ...job,
     id: String(job.id || "").trim(),
@@ -34,6 +48,7 @@ export function normalizeJob(job = {}) {
     slots,
     vacancies: job.vacancies ?? slots,
     candidates: Number(job.candidates || 0),
+    accepted,
     available,
     filled,
     isHidden: Boolean(job.isHidden),
@@ -68,5 +83,13 @@ export function slotStats(job) {
   const filled = Math.max(0, Number(job.filled || 0));
   const available = Math.max(0, Number(job.available ?? slots - filled));
   const filledPct = slots > 0 ? Math.min(100, Math.max(0, (filled / slots) * 100)) : 0;
-  return { slots, filled, available, filledPct };
+  // accepted: manual quota. Distinct from filled (auto from lolos registrations).
+  const acceptedRaw = job.accepted != null ? Number(job.accepted) : null;
+  const accepted = acceptedRaw != null && Number.isFinite(acceptedRaw) && acceptedRaw >= 0
+    ? Math.min(Math.floor(acceptedRaw), slots)
+    : null;
+  const acceptedPct = accepted != null && slots > 0
+    ? Math.min(100, Math.max(0, (accepted / slots) * 100))
+    : null;
+  return { slots, filled, available, filledPct, accepted, acceptedPct };
 }

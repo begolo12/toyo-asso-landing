@@ -161,7 +161,7 @@ function renderDetailBody(job) {
   const salaryHourly = job.salary.grossHourly
     ? ` <span class="detail-value-sub">(${formatYen(job.salary.grossHourly)}${t("job.salary.unit") === "/bln" ? "/jam" : "/hr"})</span>`
     : "";
-  const { slots, available } = slotStats(job);
+  const { slots, available, accepted } = slotStats(job);
   const vacanciesText = `${job.vacancies} (${t("job.candidates")} ${job.candidates || 0})`;
 
   const interviewType = job.interview && job.interview.type
@@ -169,6 +169,7 @@ function renderDetailBody(job) {
     : t("job.interview.tba");
   const interviewDate = job.interview && job.interview.date ? formatDate(job.interview.date) : "";
   const isFull = slots > 0 && available === 0;
+  const showAccepted = accepted != null && accepted < slots && slots > 0;
 
   let html = `
     <div class="detail-grid">
@@ -184,6 +185,14 @@ function renderDetailBody(job) {
         <span class="detail-label">👥 ${t("job.looking")}</span>
         <span class="detail-value">${escapeHtml(vacanciesText)}</span>
       </div>
+      ${showAccepted ? `
+      <div class="detail-item detail-item-accepted">
+        <span class="detail-label">🎯 ${t("job.accepted")}</span>
+        <span class="detail-value detail-value-accepted">
+          <strong>${accepted}</strong> ${t("job.accepted.of")} ${slots}
+          <span class="detail-value-sub">(${t("job.accepted.ratio", { pct: Math.round((accepted / slots) * 100) })})</span>
+        </span>
+      </div>` : ""}
       <div class="detail-item">
         <span class="detail-label">👤 ${t("job.gender.male") === "Male" ? "Gender" : "Jenis Kelamin"}</span>
         <span class="detail-value">${escapeHtml(genderText(job.gender))}</span>

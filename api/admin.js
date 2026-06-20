@@ -181,6 +181,20 @@ export default async function handler(req, res) {
                     });
                 }
 
+                // Validasi accepted (opsional, 0 <= accepted <= slots)
+                const slotsForAccepted = Number(job.slots) || Number(job.vacancies) || 0;
+                if (job.accepted != null && job.accepted !== "") {
+                    const a = Number(job.accepted);
+                    if (!Number.isFinite(a) || a < 0) {
+                        return res.status(400).json({ error: "accepted harus angka ≥ 0" });
+                    }
+                    if (a > slotsForAccepted) {
+                        return res.status(400).json({
+                            error: `accepted (${a}) tidak boleh melebihi slots (${slotsForAccepted})`,
+                        });
+                    }
+                }
+
                 // Bangun objek job yang bersih + sanitize id
                 const cleanId = String(job.id)
                     .trim()
@@ -205,6 +219,9 @@ export default async function handler(req, res) {
                     location: String(job.location).trim(),
                     vacancies: job.vacancies != null ? job.vacancies : 0,
                     candidates: job.candidates != null ? Number(job.candidates) : 0,
+                    accepted: job.accepted != null && job.accepted !== ""
+                        ? Math.floor(Number(job.accepted))
+                        : null,
                     salary: {
                         gross: Number(job.salary.gross),
                         grossHourly: job.salary.grossHourly ? Number(job.salary.grossHourly) : null,
@@ -326,6 +343,19 @@ export default async function handler(req, res) {
                         error: `Field wajib belum diisi: ${errors.join(", ")}`,
                     });
                 }
+                // Validasi accepted (opsional, 0 <= accepted <= slots)
+                const slotsForAccepted = Number(job.slots) || Number(job.vacancies) || 0;
+                if (job.accepted != null && job.accepted !== "") {
+                    const a = Number(job.accepted);
+                    if (!Number.isFinite(a) || a < 0) {
+                        return res.status(400).json({ error: "accepted harus angka ≥ 0" });
+                    }
+                    if (a > slotsForAccepted) {
+                        return res.status(400).json({
+                            error: `accepted (${a}) tidak boleh melebihi slots (${slotsForAccepted})`,
+                        });
+                    }
+                }
                 const cleanId = String(job.id).trim().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
                 if (!cleanId) {
                     return res.status(400).json({ error: "id lowongan tidak valid" });
@@ -343,6 +373,9 @@ export default async function handler(req, res) {
                     location: String(job.location).trim(),
                     vacancies: job.vacancies != null ? job.vacancies : 0,
                     candidates: job.candidates != null ? Number(job.candidates) : 0,
+                    accepted: job.accepted != null && job.accepted !== ""
+                        ? Math.floor(Number(job.accepted))
+                        : null,
                     salary: {
                         gross: Number(job.salary.gross),
                         grossHourly: job.salary.grossHourly ? Number(job.salary.grossHourly) : null,

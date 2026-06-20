@@ -246,3 +246,78 @@ main { flex: 1 0 auto; }
     font-weight: 400;
     user-select: none;
 }
+
+/* ============================================
+   Theme toggle (light / dark / system)
+   Cycles through states on click. Used in
+   header-actions next to .lang-toggle.
+   ============================================ */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background var(--motion-fast, 150ms) var(--ease-out, ease),
+                color var(--motion-fast, 150ms) var(--ease-out, ease),
+                transform var(--motion-fast, 150ms) var(--ease-out, ease);
+    position: relative;
+}
+.theme-toggle:hover {
+    background: var(--color-bg-soft);
+    color: var(--color-text);
+    transform: translateY(-1px);
+}
+.theme-toggle:active { transform: translateY(0); }
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+.theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.theme-toggle-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity var(--motion-base, 200ms) var(--ease-out, ease),
+                transform var(--motion-base, 200ms) var(--ease-out, ease);
+}
+.theme-toggle-icon.is-hidden {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+}
+/* Small "A" pill in corner for auto/system mode */
+.theme-toggle-auto-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 4px;
+    background: var(--color-admin, #1e3a5f);
+    color: #fff;
+    border-radius: var(--radius-full, 9999px);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 14px;
+    text-align: center;
+    border: 2px solid var(--color-surface);
+    box-sizing: content-box;
+    pointer-events: none;
+}

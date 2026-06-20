@@ -10,6 +10,22 @@
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <script>
+      // Apply persisted theme synchronously to avoid FOUC.
+      (function () {
+        try {
+          var stored = localStorage.getItem("lpkpjb.theme");
+          if (stored === "light" || stored === "dark") {
+            document.documentElement.setAttribute("data-theme", stored);
+            document.documentElement.style.colorScheme = stored;
+          } else {
+            document.documentElement.style.colorScheme = "light dark";
+          }
+        } catch (e) { /* localStorage blocked */ }
+      })();
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/shared/tokens.css">
     <link rel="stylesheet" href="/src/shared/base.css">
@@ -50,17 +66,34 @@
                     <div class="brand-mark" aria-hidden="true">
                         <span class="brand-mark-nip">PJB</span>
                     </div>
-                    <div>
+                    <div class="dash-header-titles">
                         <div class="dash-title">Admin Panel</div>
                         <div class="dash-subtitle">LPK PJB</div>
+                        <div class="dash-welcome" data-i18n="admin.dashboard.welcome">Halo, Admin</div>
                     </div>
                 </div>
                 <div class="dash-actions">
+                    <div class="dash-stats-chip" id="dashStatsChip" role="status" aria-live="polite" title="Ringkasan data">
+                        <span><strong id="dashStatsJobs">0</strong> <span data-i18n="dash.stats.jobs">lowongan</span></span>
+                        <span class="dot">·</span>
+                        <span><strong id="dashStatsRegs">0</strong> <span data-i18n="dash.stats.regs">pendaftar</span></span>
+                    </div>
                     <div class="lang-toggle" id="langToggle" role="group" data-i18n-aria="lang.toggle.aria" aria-label="Ganti bahasa">
                         <button type="button" data-lang="id" aria-pressed="true">ID</button>
                         <span class="lang-toggle-divider" aria-hidden="true">/</span>
                         <button type="button" data-lang="en" aria-pressed="false">EN</button>
                     </div>
+                    <button type="button" class="theme-toggle" id="themeToggle" data-theme-state="system" data-i18n-aria="theme.toggle.aria" aria-label="Ganti tema" title="Tema: Otomatis. Klik untuk ganti.">
+                        <span class="theme-toggle-icon" data-theme-icon="auto" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor" stroke="none"/></svg>
+                        </span>
+                        <span class="theme-toggle-icon is-hidden" data-theme-icon="light" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                        </span>
+                        <span class="theme-toggle-icon is-hidden" data-theme-icon="dark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+                        </span>
+                    </button>
                     <a href="/" class="btn btn-sm btn-secondary"><span data-i18n="admin.nav.landing">← Ke Landing Page</span></a>
                     <button id="logoutBtn" class="btn btn-link" type="button" data-i18n="admin.nav.logout">Keluar</button>
                 </div>
@@ -69,8 +102,8 @@
 
         <main id="main" class="container dash-main">
             <div id="tablist" class="tabs" role="tablist" aria-label="Bagian admin">
-                <button class="tab active" role="tab" data-tab="jobs" id="tab-btn-jobs" aria-selected="true" aria-controls="tab-jobs" tabindex="0" type="button" data-i18n="admin.tabs.jobs">Kelola Lowongan</button>
-                <button class="tab" role="tab" data-tab="registrations" id="tab-btn-registrations" aria-selected="false" aria-controls="tab-registrations" tabindex="-1" type="button" data-i18n="admin.tabs.registrations">Data Pendaftar</button>
+                <button class="tab active" role="tab" data-tab="jobs" id="tab-btn-jobs" aria-selected="true" aria-controls="tab-jobs" tabindex="0" type="button" data-i18n="admin.tabs.jobs">Kelola Lowongan <span class="tab-badge" id="tabBadgeJobs" hidden>0</span></button>
+                <button class="tab" role="tab" data-tab="registrations" id="tab-btn-registrations" aria-selected="false" aria-controls="tab-registrations" tabindex="-1" type="button" data-i18n="admin.tabs.registrations">Data Pendaftar <span class="tab-badge" id="tabBadgeRegs" hidden>0</span></button>
                 <button class="tab" role="tab" data-tab="history" id="tab-btn-history" aria-selected="false" aria-controls="tab-history" tabindex="-1" type="button" data-i18n="admin.tabs.history">Riwayat Hide</button>
             </div>
 
@@ -87,7 +120,7 @@
                 </div>
             </section>
 
-            <section id="tab-registrations" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-registrations" hidden>
+            <section id="tab-registrations" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-registrations">
                 <h2>Data Pendaftar</h2>
                 <p class="hint">Semua pendaftar dari semua lowongan. Data diurutkan dari yang terbaru.</p>
 
@@ -110,12 +143,16 @@
                         </label>
                         <label class="reg-filter reg-filter-search">
                             <span>Cari</span>
-                            <input type="search" id="filterSearch" placeholder="Nama / HP..." />
+                            <div class="reg-search-wrap">
+                                <svg class="reg-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="search" id="filterSearch" placeholder="Nama / HP..." />
+                                <button type="button" class="reg-search-clear" id="filterSearchClear" aria-label="Bersihkan pencarian" hidden>&times;</button>
+                            </div>
                         </label>
                     </div>
                     <div class="reg-toolbar-right">
                         <button id="btnResetRegs" class="btn btn-sm btn-danger" type="button" title="Hapus semua data pendaftar (tidak bisa dibatalkan)">🗑 Reset Semua</button>
-                        <button id="btnRefresh" class="btn btn-sm" type="button">Refresh</button>
+                        <button id="btnRefresh" class="btn btn-sm" type="button" title="Refresh data (R)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Refresh</button>
                         <button id="btnExportPDF" class="btn btn-sm btn-export" type="button">PDF</button>
                         <button id="btnExportExcel" class="btn btn-sm btn-export" type="button">Excel</button>
                         <button id="btnExportCSV" class="btn btn-sm btn-export" type="button">CSV</button>
@@ -123,10 +160,50 @@
                 </div>
 
                 <div id="regStats" class="reg-stats" role="group" aria-label="Statistik pendaftar">
-                    <div class="reg-stat"><span class="reg-stat-label">Total Pendaftar</span><span class="reg-stat-value" id="statTotal">0</span></div>
-                    <div class="reg-stat stat-lolos"><span class="reg-stat-label">Lolos</span><span class="reg-stat-value" id="statLolos">0</span></div>
-                    <div class="reg-stat stat-tidak"><span class="reg-stat-label">Tidak Lolos</span><span class="reg-stat-value" id="statTidak">0</span></div>
-                    <div class="reg-stat stat-pending"><span class="reg-stat-label">Pending</span><span class="reg-stat-value" id="statPending">0</span></div>
+                    <div class="reg-stat stat-total">
+                        <div class="reg-stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <div class="reg-stat-body">
+                            <span class="reg-stat-label">Total Pendaftar</span>
+                            <span class="reg-stat-value" id="statTotal">0</span>
+                        </div>
+                    </div>
+                    <div class="reg-stat stat-lolos">
+                        <div class="reg-stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="reg-stat-body">
+                            <span class="reg-stat-label">Lolos</span>
+                            <span class="reg-stat-value" id="statLolos">0</span>
+                        </div>
+                    </div>
+                    <div class="reg-stat stat-tidak">
+                        <div class="reg-stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </div>
+                        <div class="reg-stat-body">
+                            <span class="reg-stat-label">Tidak Lolos</span>
+                            <span class="reg-stat-value" id="statTidak">0</span>
+                        </div>
+                    </div>
+                    <div class="reg-stat stat-pending">
+                        <div class="reg-stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div class="reg-stat-body">
+                            <span class="reg-stat-label">Pending</span>
+                            <span class="reg-stat-value" id="statPending">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="regFilterChips" class="filter-chips" hidden role="status" aria-live="polite">
+                    <span class="filter-chips-label">Filter aktif:</span>
+                    <button type="button" class="filter-chip" data-clear="job" hidden><span class="filter-chip-key">Lowongan</span><span class="filter-chip-val"></span><span class="filter-chip-x" aria-hidden="true">×</span></button>
+                    <button type="button" class="filter-chip" data-clear="status" hidden><span class="filter-chip-key">Status</span><span class="filter-chip-val"></span><span class="filter-chip-x" aria-hidden="true">×</span></button>
+                    <button type="button" class="filter-chip" data-clear="search" hidden><span class="filter-chip-key">Cari</span><span class="filter-chip-val"></span><span class="filter-chip-x" aria-hidden="true">×</span></button>
+                    <button type="button" class="filter-chips-clear-all" id="filterChipsClearAll">Reset semua</button>
                 </div>
 
                 <div id="registrationsPanel" class="registrations-panel" aria-live="polite" aria-busy="true">
@@ -134,7 +211,7 @@
                 </div>
             </section>
 
-            <section id="tab-history" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-history" hidden>
+            <section id="tab-history" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-history">
                 <h2>Riwayat Hide / Unhide</h2>
                 <p class="hint">Audit trail perubahan visibility lowongan. Lowongan yang di-hide tetap bisa di-restore lewat tab Kelola Lowongan (tombol Unhide).</p>
                 <div id="historyPanel" class="history-panel" aria-live="polite" aria-busy="true">
@@ -146,134 +223,241 @@
 
     <div id="createJobModal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="createJobModalTitle" aria-modal="true">
         <div class="modal-overlay" data-close-dialog></div>
-        <div class="modal-content modal-content-wide">
+        <div class="modal-content modal-content-workspace">
             <button class="modal-close" data-close-dialog aria-label="Tutup" type="button">&times;</button>
-            <div class="modal-header">
-                <h2 id="createJobModalTitle">Tambah Lowongan Baru</h2>
-                <p class="modal-subtitle">Lowongan akan langsung tersedia di landing page</p>
+            <header class="modal-header">
+                <div>
+                    <h2 id="createJobModalTitle" data-i18n="admin.form.title.create">Tambah Lowongan Baru</h2>
+                    <p class="modal-subtitle" data-i18n="admin.form.subtitle">Lowongan akan langsung tersedia di landing page</p>
+                </div>
+            </header>
+
+            <div id="formRequiredSummary" class="form-required-summary" hidden role="alert" aria-live="polite">
+                <span class="form-required-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </span>
+                <div class="form-required-text">
+                    <strong id="formRequiredCount">0</strong>
+                    <span data-i18n="admin.form.required.missing">{count} field wajib belum diisi:</span>
+                    <span id="formRequiredList" class="form-required-list"></span>
+                </div>
             </div>
 
-            <form id="createJobForm" class="create-job-form" novalidate>
-                <input type="hidden" name="editId" id="editId" value="">
-                <fieldset class="form-group-fieldset">
-                    <legend>Identitas Lowongan</legend>
-                    <div class="form-grid">
-                        <label class="form-field">
-                            <span>ID Lowongan <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="text" name="id" id="id" required pattern="[a-z0-9\-]+" placeholder="contoh: abc-construction" autocomplete="off" aria-describedby="idHelp">
-                            <small id="idHelp">Huruf kecil, angka, strip. Tidak bisa diubah saat edit. Contoh: <code>torizen-shokuchoniku</code></small>
-                        </label>
+            <div class="modal-workspace">
+                <form id="createJobForm" class="create-job-form" novalidate>
+                    <input type="hidden" name="editId" id="editId" value="">
 
-                        <label class="form-field">
-                            <span>Jumlah Lowongan (slot) <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="number" name="slots" required min="1" placeholder="Contoh: 5" aria-describedby="slotsHelp">
-                            <small id="slotsHelp">Slot total. Otomatis berkurang saat pendaftar di-aprove (lolos).</small>
-                        </label>
+                    <nav class="form-stepper" aria-label="Bagian form">
+                        <button type="button" class="form-stepper-item is-active" data-step="1">
+                            <span class="form-stepper-num">1</span>
+                            <span class="form-stepper-label" data-i18n="admin.form.section.identity">Identitas</span>
+                        </button>
+                        <span class="form-stepper-line" aria-hidden="true"></span>
+                        <button type="button" class="form-stepper-item" data-step="2">
+                            <span class="form-stepper-num">2</span>
+                            <span class="form-stepper-label" data-i18n="admin.form.section.fields">Bidang</span>
+                        </button>
+                        <span class="form-stepper-line" aria-hidden="true"></span>
+                        <button type="button" class="form-stepper-item" data-step="3">
+                            <span class="form-stepper-num">3</span>
+                            <span class="form-stepper-label" data-i18n="admin.form.section.compensation">Gaji</span>
+                        </button>
+                        <span class="form-stepper-line" aria-hidden="true"></span>
+                        <button type="button" class="form-stepper-item" data-step="4">
+                            <span class="form-stepper-num">4</span>
+                            <span class="form-stepper-label" data-i18n="admin.form.section.details">Detail</span>
+                        </button>
+                    </nav>
 
-                        <label class="form-field">
-                            <span>Nama Perusahaan (Romaji) <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="text" name="companyRomaji" required maxlength="200" placeholder="TORIZEN SHOKUCHONIKU KYOUDOU KUMIAI" autocomplete="off">
-                        </label>
+                    <!-- Section 1: Identitas -->
+                    <section class="form-section" data-step="1" aria-labelledby="sec-1-title">
+                        <header class="form-section-header">
+                            <div class="form-section-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                            </div>
+                            <div>
+                                <h3 id="sec-1-title" class="form-section-title" data-i18n="admin.form.section.identity">Identitas Lowongan</h3>
+                                <p class="form-section-hint" data-i18n="admin.form.section.identity.hint">ID unik, nama perusahaan, dan jumlah slot.</p>
+                            </div>
+                        </header>
 
-                        <label class="form-field">
-                            <span>Nama Perusahaan (JP) <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="text" name="companyJp" required maxlength="200" placeholder="トリゼン食鳥肉協同組合" autocomplete="off">
-                        </label>
-                    </div>
-                </fieldset>
+                        <div class="quota-card">
+                            <header class="quota-card-header">
+                                <h4 class="quota-card-title">
+                                    <span class="quota-card-title-icon" aria-hidden="true">🎯</span>
+                                    <span data-i18n="admin.form.quota.title">Quota Penerimaan</span>
+                                </h4>
+                                <button type="button" class="quota-toggle" id="quotaToggle" data-mode="auto" aria-pressed="true">
+                                    <span class="quota-toggle-track" aria-hidden="true"><span class="quota-toggle-thumb"></span></span>
+                                    <span class="quota-toggle-label" id="quotaToggleLabel" data-i18n="admin.form.quota.auto">Otomatis (= slots)</span>
+                                </button>
+                            </header>
+                            <div class="quota-fields">
+                                <div class="form-grid">
+                                    <label class="form-field" data-field="slots" id="field-slots">
+                                        <span class="form-field-label"><span data-i18n="admin.form.slots.label">Jumlah Lowongan (slot)</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                        <input type="number" name="slots" required min="1" placeholder="Contoh: 5" inputmode="numeric">
+                                    </label>
+                                    <label class="form-field" data-field="candidates" id="field-candidates">
+                                        <span class="form-field-label"><span data-i18n="admin.form.candidates.label">Jumlah Kandidat (initial)</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                        <input type="number" name="candidates" min="0" placeholder="30" inputmode="numeric">
+                                    </label>
+                                    <label class="form-field quota-accepted-field" data-field="accepted" id="field-accepted" hidden>
+                                        <span class="form-field-label"><span data-i18n="admin.form.accepted.label">Total yang akan diterima</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                        <input type="number" name="accepted" min="0" placeholder="≤ slots" inputmode="numeric">
+                                        <small class="form-field-help" data-i18n="admin.form.accepted.help">Berapa orang yang akan diterima. Boleh lebih kecil dari jumlah slot. Contoh: 6 slot tapi hanya terima 2.</small>
+                                        <small class="form-field-error" id="acceptedError" hidden></small>
+                                    </label>
+                                </div>
+                                <div class="quota-summary" aria-live="polite" id="quotaSummary">
+                                    <span class="quota-summary-item"><strong id="quotaSlotsText">0</strong> <span data-i18n="quota.slots">slot</span></span>
+                                    <span class="dot" aria-hidden="true">·</span>
+                                    <span class="quota-summary-item"><strong id="quotaCandidatesText">0</strong> <span data-i18n="quota.candidates">kandidat</span></span>
+                                    <span class="dot" aria-hidden="true">·</span>
+                                    <span class="quota-summary-item quota-summary-accepted" id="quotaAcceptedSummary" hidden></span>
+                                </div>
+                            </div>
+                        </div>
 
-                <fieldset class="form-group-fieldset">
-                    <legend>Bidang &amp; Lokasi</legend>
-                    <div class="form-grid">
-                        <label class="form-field">
-                            <span>Industri <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="text" name="industry" required maxlength="200" placeholder="Pengolahan Makanan Daging Ayam" autocomplete="off">
-                        </label>
+                        <div class="form-grid form-grid-secondary">
+                            <label class="form-field" data-field="id" id="field-id">
+                                <span class="form-field-label"><span data-i18n="admin.form.id.label">ID Lowongan</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="text" name="id" required pattern="[a-z0-9\-]+" placeholder="contoh: abc-construction" autocomplete="off" autocapitalize="off" spellcheck="false">
+                                <small class="form-field-help" data-i18n="admin.form.id.help">Huruf kecil, angka, strip. Tidak bisa diubah saat edit.</small>
+                            </label>
+                            <label class="form-field" data-field="companyRomaji" id="field-companyRomaji">
+                                <span class="form-field-label"><span data-i18n="admin.form.companyRomaji.label">Nama Perusahaan (Romaji)</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="text" name="companyRomaji" required maxlength="200" placeholder="KABUSHIKI GAISHA ABC" autocomplete="off">
+                            </label>
+                            <label class="form-field" data-field="companyJp" id="field-companyJp">
+                                <span class="form-field-label"><span data-i18n="admin.form.companyJp.label">Nama Perusahaan (JP)</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="text" name="companyJp" required maxlength="200" placeholder="株式会社ABC" autocomplete="off" lang="ja">
+                            </label>
+                        </div>
+                    </section>
 
-                        <label class="form-field">
-                            <span>Industri (JP)</span>
-                            <input type="text" name="industryJp" maxlength="200" placeholder="食鳥処理加工業" autocomplete="off">
-                        </label>
+                    <!-- Section 2: Bidang & Lokasi -->
+                    <section class="form-section" data-step="2" aria-labelledby="sec-2-title">
+                        <header class="form-section-header">
+                            <div class="form-section-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div>
+                                <h3 id="sec-2-title" class="form-section-title" data-i18n="admin.form.section.fields">Bidang &amp; Lokasi</h3>
+                                <p class="form-section-hint" data-i18n="admin.form.section.fields.hint">Bidang pekerjaan, lokasi penempatan, dan gender.</p>
+                            </div>
+                        </header>
+                        <div class="form-grid">
+                            <label class="form-field" data-field="industry" id="field-industry">
+                                <span class="form-field-label"><span data-i18n="admin.form.industry.label">Industri</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="text" name="industry" required maxlength="200" placeholder="Konstruksi Scaffolding" autocomplete="off">
+                            </label>
+                            <label class="form-field" data-field="industryJp" id="field-industryJp">
+                                <span class="form-field-label"><span data-i18n="admin.form.industryJp.label">Industri (JP)</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                <input type="text" name="industryJp" maxlength="200" placeholder="建設業" autocomplete="off" lang="ja">
+                            </label>
+                            <label class="form-field" data-field="location" id="field-location">
+                                <span class="form-field-label"><span data-i18n="admin.form.location.label">Lokasi</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="text" name="location" required maxlength="200" placeholder="SAGA, Jepang" autocomplete="off">
+                            </label>
+                            <label class="form-field" data-field="gender" id="field-gender">
+                                <span class="form-field-label"><span data-i18n="admin.form.gender.label">Gender</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <select name="gender" required>
+                                    <option value="all">Pria &amp; Wanita</option>
+                                    <option value="male">Pria saja</option>
+                                    <option value="female">Wanita saja</option>
+                                </select>
+                            </label>
+                        </div>
+                    </section>
 
-                        <label class="form-field">
-                            <span>Lokasi <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="text" name="location" required maxlength="200" placeholder="SAGA, Jepang" autocomplete="off">
-                        </label>
+                    <!-- Section 3: Gaji & Interview -->
+                    <section class="form-section" data-step="3" aria-labelledby="sec-3-title">
+                        <header class="form-section-header">
+                            <div class="form-section-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                            <div>
+                                <h3 id="sec-3-title" class="form-section-title" data-i18n="admin.form.section.compensation">Gaji &amp; Interview</h3>
+                                <p class="form-section-hint" data-i18n="admin.form.section.compensation.hint">Detail gaji dan jadwal interview.</p>
+                            </div>
+                        </header>
+                        <div class="form-grid">
+                            <label class="form-field" data-field="salaryGross" id="field-salaryGross">
+                                <span class="form-field-label"><span data-i18n="admin.form.salaryGross.label">Gaji Kotor (¥/bln)</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="number" name="salaryGross" required min="0" placeholder="165000" inputmode="numeric">
+                            </label>
+                            <label class="form-field" data-field="salaryHourly" id="field-salaryHourly">
+                                <span class="form-field-label"><span data-i18n="admin.form.salaryHourly.label">Gaji Kotor / Jam (¥)</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                <input type="number" name="salaryHourly" min="0" placeholder="1030" inputmode="numeric">
+                            </label>
+                            <label class="form-field" data-field="salaryNet" id="field-salaryNet">
+                                <span class="form-field-label"><span data-i18n="admin.form.salaryNet.label">Gaji Bersih (¥/bln)</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="number" name="salaryNet" required min="0" placeholder="130000" inputmode="numeric">
+                            </label>
+                            <label class="form-field" data-field="interviewDate" id="field-interviewDate">
+                                <span class="form-field-label"><span data-i18n="admin.form.interviewDate.label">Tanggal Interview</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <input type="date" name="interviewDate" required>
+                            </label>
+                            <label class="form-field" data-field="interviewType" id="field-interviewType">
+                                <span class="form-field-label"><span data-i18n="admin.form.interviewType.label">Tipe Interview</span> <span class="req-mark" aria-label="wajib diisi">*</span></span>
+                                <select name="interviewType" required>
+                                    <option value="offline" selected>Offline</option>
+                                    <option value="online">Online</option>
+                                </select>
+                            </label>
+                        </div>
+                    </section>
 
-                        <label class="form-field">
-                            <span>Gender <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <select name="gender" required>
-                                <option value="all">Pria &amp; Wanita</option>
-                                <option value="male">Pria saja</option>
-                                <option value="female">Wanita saja</option>
-                            </select>
-                        </label>
+                    <!-- Section 4: Detail & Persyaratan -->
+                    <section class="form-section" data-step="4" aria-labelledby="sec-4-title">
+                        <header class="form-section-header">
+                            <div class="form-section-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            </div>
+                            <div>
+                                <h3 id="sec-4-title" class="form-section-title" data-i18n="admin.form.section.details">Detail &amp; Persyaratan</h3>
+                                <p class="form-section-hint" data-i18n="admin.form.section.details.hint">Deskripsi pekerjaan, syarat, dan catatan interview.</p>
+                            </div>
+                        </header>
+                        <div class="form-stack">
+                            <label class="form-field form-field-full" data-field="description" id="field-description">
+                                <span class="form-field-label"><span data-i18n="admin.form.description.label">Deskripsi Pekerjaan</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                <textarea name="description" rows="2" placeholder="Pengolahan Makanan Daging Ayam / 食鳥処理加工業..."></textarea>
+                            </label>
+                            <label class="form-field form-field-full" data-field="requirements" id="field-requirements">
+                                <span class="form-field-label"><span data-i18n="admin.form.requirements.label">Persyaratan</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                <textarea name="requirements" rows="8" placeholder="Satu syarat per baris. Contoh:&#10;Laki-laki&#10;Umur 20–25 tahun&#10;Tinggi badan minimal 168 cm"></textarea>
+                                <small class="form-field-help" data-i18n="admin.form.requirements.help">Satu syarat per baris.</small>
+                            </label>
+                            <label class="form-field form-field-full" data-field="mensetsuNotes" id="field-mensetsuNotes">
+                                <span class="form-field-label"><span data-i18n="admin.form.mensetsuNotes.label">Catatan Mensetsu</span> <span class="opt-mark" data-i18n="admin.form.opt.mark">opsional</span></span>
+                                <textarea name="mensetsuNotes" rows="2" placeholder="Catatan tambahan tentang interview (tes khusus, dll)"></textarea>
+                            </label>
+                        </div>
+                    </section>
 
-                        <label class="form-field">
-                            <span>Jumlah Kandidat (initial)</span>
-                            <input type="number" name="candidates" min="0" placeholder="30">
-                        </label>
-                    </div>
-                </fieldset>
+                    <div id="createJobError" class="form-error hidden" role="alert" aria-live="polite"></div>
+                </form>
 
-                <fieldset class="form-group-fieldset">
-                    <legend>Gaji &amp; Interview</legend>
-                    <div class="form-grid">
-                        <label class="form-field">
-                            <span>Gaji Kotor (¥/bln) <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="number" name="salaryGross" required min="0" placeholder="165000">
-                        </label>
+                <!-- Live preview aside -->
+                <aside class="form-preview" aria-labelledby="formPreviewLabel">
+                    <header class="form-preview-header">
+                        <span id="formPreviewLabel" class="form-preview-label" data-i18n="admin.form.preview.label">Pratinjau publik</span>
+                        <span class="form-preview-badge">
+                            <span class="form-preview-dot" aria-hidden="true"></span>
+                            <span data-i18n="admin.form.preview.badge">REAL-TIME</span>
+                        </span>
+                    </header>
+                    <div class="form-preview-card" id="formPreviewCard"></div>
+                    <p class="form-preview-hint" data-i18n="admin.form.preview.hint">Tampilan ini sama dengan yang dilihat pengunjung.</p>
+                </aside>
+            </div>
 
-                        <label class="form-field">
-                            <span>Gaji Kotor / Jam (¥)</span>
-                            <input type="number" name="salaryHourly" min="0" placeholder="1030">
-                        </label>
-
-                        <label class="form-field">
-                            <span>Gaji Bersih (¥/bln) <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="number" name="salaryNet" required min="0" placeholder="130000">
-                        </label>
-
-                        <label class="form-field">
-                            <span>Tanggal Interview <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <input type="date" name="interviewDate" required>
-                        </label>
-
-                        <label class="form-field">
-                            <span>Tipe Interview <span aria-hidden="true" style="color:var(--color-danger)">*</span></span>
-                            <select name="interviewType" required>
-                                <option value="offline" selected>Offline</option>
-                                <option value="online">Online</option>
-                            </select>
-                        </label>
-                    </div>
-                </fieldset>
-
-                <fieldset class="form-group-fieldset">
-                    <legend>Detail &amp; Persyaratan</legend>
-                    <label class="form-field form-field-full">
-                        <span>Deskripsi Pekerjaan</span>
-                        <textarea name="description" rows="2" placeholder="Contoh: Pengolahan Makanan Daging Ayam / 食鳥処理加工業..."></textarea>
-                    </label>
-
-                    <label class="form-field form-field-full">
-                        <span>Persyaratan</span>
-                        <textarea name="requirements" rows="8" placeholder="Satu syarat per baris. Contoh:&#10;Perempuan&#10;Umur 19-30 tahun&#10;Tinggi badan minimal 155 cm"></textarea>
-                    </label>
-
-                    <label class="form-field form-field-full">
-                        <span>Catatan Mensetsu</span>
-                        <textarea name="mensetsuNotes" rows="2" placeholder="Catatan tambahan tentang interview (tes khusus, dll)"></textarea>
-                    </label>
-                </fieldset>
-
-                <div id="createJobError" class="form-error hidden" role="alert" aria-live="polite"></div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" data-close-dialog>Batal</button>
-                    <button type="submit" class="btn btn-primary" id="createJobSubmitBtn">Simpan Lowongan</button>
-                </div>
-            </form>
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-close-dialog data-i18n="admin.form.cancel">Batal</button>
+                <button type="submit" form="createJobForm" class="btn btn-primary" id="createJobSubmitBtn" data-i18n="admin.form.save">Simpan Lowongan</button>
+            </footer>
         </div>
     </div>
 
